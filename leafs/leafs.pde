@@ -29,6 +29,7 @@ void plant(int numLeaves, float minLeafScale, float maxLeafScale) {
     rotate(angle);
     scale(scale);
     leaf();
+    leaf();
     popMatrix();
     angle += PI; // alternate the side for each leaf
   }

@@ -1,57 +1,13 @@
 float depth = 2000;
 
 void settings() {
-size(500, 500, P3D);
+size(500, 500, P2D);
 }
 void setup() {
 noStroke();
 }
-/*void draw() {
-  camera(width/2, height/2, depth, 250, 250, 0, 0, 1, 0);
-  directionalLight(50, 100, 125, 0, -1, 0);
-  ambientLight(102, 102, 102);
-  background(200);
-  translate(width/2, height/2, 0);
-  float rz = map(mouseY, 0, height, 0, PI);
-  float ry = map(mouseX, 0, width, 0, PI);
-  rotateZ(rz);
-  rotateY(ry);
-  
-  for (int x = -2; x <= 2; x++) {
-    for (int y = -2; y <= 2; y++) {
-      for (int z = -2; z <= 2; z++) {
-        pushMatrix();
-        translate(100 * x, 100 * y, -100 * z);
-        box(50);
-        translate(200 * x, 200 * y, -200 * z);
-        sphere (50);
-        popMatrix();
-      }
-    }
-  }
-}
-void keyPressed() {
-  
-  if (key == CODED) {
-    if (keyCode == UP) {
-      depth -= 50;
-    }
-    else if (keyCode == DOWN) {
-      depth += 50;
-    }
-  }
-}
-*/
 
 void draw() {
-  /*
-  background(0, 0, 0);
-  
-   My3DPoint eye = new My3DPoint(-100, -100, -5000);
-   My3DPoint origin = new My3DPoint(0, 0, 0); //The first vertex of your cuboid
-   My3DBox input3DBox = new My3DBox(origin, 100, 150, 300);
-   projectBox(eye, input3DBox).render();
-   */
 
   background(255, 255, 255);
   
@@ -59,29 +15,52 @@ void draw() {
   My3DPoint origin = new My3DPoint(0, 0, 0);
   My3DBox input3DBox = new My3DBox(origin, 100, 150, 300);
   
-  camera(width/2, height/2, depth, 250, 250, 0, 0, 1, 0);
-  
-  float rz = map(mouseY, 0, height, 0, PI);
-  float ry = map(mouseX, 0, width, 0, PI);
-  rotateZ(rz);
-  rotateY(ry);
-  
   //rotated around x
-  float[][] transform1 = rotateXMatrix(PI/8);
+  float[][] transform1 = rotateXMatrix(tempRot1);
   input3DBox = transformBox(input3DBox, transform1);
-  projectBox(eye, input3DBox).render();
+  projectBox(eye, input3DBox);
+  
+  //rotated around y
+  float[][] transform1bis = rotateYMatrix(tempRot2);
+  input3DBox = transformBox(input3DBox, transform1bis);
+  projectBox(eye, input3DBox);
+  
+  //rotated, translated, and scaled
+  float[][] transform3 = scaleMatrix(tempScale, tempScale, tempScale);
+  input3DBox = transformBox(input3DBox, transform3);
+  projectBox(eye, input3DBox);
   
   //rotated and translated
   float[][] transform2 = translationMatrix(200, 200, 0);
   input3DBox = transformBox(input3DBox, transform2);
   projectBox(eye, input3DBox).render();
-  
-  //rotated, translated, and scaled
-  float[][] transform3 = scaleMatrix(2, 2, 2);
-  input3DBox = transformBox(input3DBox, transform3);
-  projectBox(eye, input3DBox).render();
 }
 
+float position = mouseY;
+float tempScale = 1;
+float tempRot1 = 0;
+float tempRot2 = 0;
+
+void mouseDragged(){
+  if(mouseY < position)
+    tempScale -= 0.1;
+  else if (mouseY > position)
+    tempScale += 0.1;
+  position = mouseY;
+}
+
+void keyPressed(){
+  if(key == CODED){
+    if(keyCode == UP)
+    tempRot1 += PI/15;
+    if(keyCode == DOWN)
+    tempRot1 -= PI/15;
+    if(keyCode == RIGHT)
+    tempRot2 += PI/15;
+    if(keyCode == LEFT)
+    tempRot2 -= PI/15;
+  }
+}
 
 class My2DPoint {
   float x;

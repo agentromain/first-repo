@@ -10,7 +10,7 @@ float rotZ = 0;
 int vitesse = 50;
 
 void settings(){
-  size(700,700,P3D);
+  size(1000,1000,P3D);
 }
 
 
@@ -22,7 +22,7 @@ void setup(){
 void draw(){
   /* 
   Caméra :
-    Les 3 premiers arguments indiquent que l'oeil est placé en (0,0,500)
+    Les 3 premiers arguments indiquent que l'oeil est placé en (0,-50,1200)
     Les 3 suivants indiquent que l'on regarde le point (0,0,0)
     Les 3 derniers indiquent que parmi (x,y,z) = (0,1,0), c'est y l'axe vertical
     
@@ -33,10 +33,9 @@ void draw(){
         - Y pointe en bas
         - Z sort du plan
   */
-  camera(0, 0, 700, 0, 0, 0, 0, 1, 0);
+  camera(0, -50, 1200, 0, 0, 0, 0, 1, 0);
   background(255,255,255);
   lights();
-  translate(0,0,0);
   stroke(0,0,0);
   rotateX(rotX);
   rotateZ(rotZ);
@@ -80,7 +79,7 @@ void mouseDragged(){
 
 
 void mouseWheel(MouseEvent event){
-  vitesse += -event.getCount();
+  vitesse -= event.getCount();
   vitesse = min(vitesse, 100);
   vitesse = max(vitesse, 1);
   println(vitesse);

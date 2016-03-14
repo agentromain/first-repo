@@ -7,17 +7,15 @@ float rotX = 0;
 float rotZ = 0;
 
 //Vitesse à laquelle les rotations s'effectuent autour des axes
-int vitesse = 50;
+int vitesse = 54;
 
 void settings(){
-  size(1000,1000,P3D);
+  size(900,900,P3D);
 }
-
 
 void setup(){
   noStroke();
 }
-
 
 void draw(){
   /* 
@@ -36,11 +34,11 @@ void draw(){
   camera(0, -50, 1200, 0, 0, 0, 0, 1, 0);
   background(255,255,255);
   lights();
+  fill(0, 200, 50);
   stroke(0,0,0);
   rotateX(rotX);
   rotateZ(rotZ);
   box(500,10,500);
-
 }
 
 
@@ -68,6 +66,8 @@ float tilt(float angle, boolean augmenter){
 
 void mouseDragged(){
   
+  //La condition regarde dans quelle direction la souris a le + bougé et effectue une seule rotation : celle qui va dans ce sens.
+  //Cela évite de partir en diagonale comme le feraient des appels consécutifs à tilt(X) puis tilt(Z)
   if ( abs((float)(mouseY-posY)) > abs((float)(mouseX-posX))){
     rotX = tilt(rotX, mouseY < posY);
     posY = mouseY;

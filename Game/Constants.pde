@@ -8,8 +8,6 @@ double posX = mouseX;
 final float side  = 500;
 final float boxHeight = 10;
 
-//Rayon de la sphère
-final float radius = 20;
 
 //Paramètres Caméra
 int cameraSize = 900;
@@ -24,6 +22,8 @@ int speed = 54;
 
 //============BALL==============
 
+//Rayon de la sphère
+final float radius = 30;
 
 //Constante de gravité
 final float gravityConstant = 0.4;

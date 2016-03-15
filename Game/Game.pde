@@ -2,11 +2,12 @@ Ball ball;
 
 void settings() {
   size(cameraSize, cameraSize,P3D);
-
+  
 }
 
 void setup() {
   ball = new Ball();
+  noStroke();
 }
 
 void draw() {
@@ -22,12 +23,15 @@ void draw() {
    - Y pointe en bas
    - Z sort du plan
    */
+   
   camera(0, -50, 1200, 0, 0, 0, 0, 1, 0);
   background(255, 255, 255);
-    
-  fill(100, 100, 100);
-  stroke(0, 0, 0);
-    
+  //lumiere
+  directionalLight(255, 255, 255, 0, 1, 0);
+  ambientLight(102, 102, 102);
+  //couleur plaque
+  fill(0, 0, 255);
+  
   rotateX(rotX);
   rotateZ(rotZ);
   box(side, boxHeight, side);
@@ -35,20 +39,9 @@ void draw() {
 
 
   //Affichage et mouvement de la balle
-  translate(0, -(radius+0.5*boxHeight), 0);  
-  ball.display();
+  translate(0, -(radius+0.5*boxHeight), 0);
   ball.update();
-  
-  PVector vel = ball.getVel();
-  PVector loc = ball.getLoc();
-  
-  //On adapte (méthode SET) la valeur de velocityX et/ou de VelocityZ SI la balle atteint l'un des cotés de la plaque
-  //(condition présente dans checkEdges)  
-  ball.setVelXZ(   ball.checkEdges(loc.x, vel.x),    ball.checkEdges(loc.z, vel.z)  );
-  
-
-
-  
+  ball.display();  
 }
 
 

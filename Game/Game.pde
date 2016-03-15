@@ -1,26 +1,12 @@
-//Nécessaires pour mouseDragged
-double posY = mouseY;
-double posX = mouseX;
-
-float side  = 500;
-float boxHeight = 10;
-
-//Nécessaires pour tilt
-float rotX = 0;
-float rotZ = 0;
-
-//Vitesse à laquelle les rotations s'effectuent autour des axes
-int vitesse = 54;
-
-Mover ball;
+Ball ball;
 
 void settings() {
-  size(900, 900, P3D);
+  size(cameraSize, cameraSize,P3D);
+
 }
 
 void setup() {
-  noStroke();
-  ball = new Mover();
+  ball = new Ball();
 }
 
 void draw() {
@@ -30,8 +16,7 @@ void draw() {
    Les 3 suivants indiquent que l'on regarde le point (0,0,0)
    Les 3 derniers indiquent que parmi (x,y,z) = (0,1,0), c'est y l'axe vertical
    
-   Attention le repère est non droit
-   
+   Attention le repère est non droit.   
    Les axes sont disposés comme suit :
    - X pointe à droite
    - Y pointe en bas
@@ -39,40 +24,53 @@ void draw() {
    */
   camera(0, -50, 1200, 0, 0, 0, 0, 1, 0);
   background(255, 255, 255);
-  lights();
-  fill(0, 200, 50);
+    
+  fill(100, 100, 100);
   stroke(0, 0, 0);
+    
   rotateX(rotX);
   rotateZ(rotZ);
   box(side, boxHeight, side);
 
-  
-  translate(0, -15, 0);
+
+
+  //Affichage et mouvement de la balle
+  translate(0, -(radius+0.5*boxHeight), 0);  
   ball.display();
   ball.update();
-  ball.checkEdges();
+  
+  PVector vel = ball.getVel();
+  PVector loc = ball.getLoc();
+  
+  //On adapte (méthode SET) la valeur de velocityX et/ou de VelocityZ SI la balle atteint l'un des cotés de la plaque
+  //(condition présente dans checkEdges)  
+  ball.setVelXZ(   ball.checkEdges(loc.x, vel.x),    ball.checkEdges(loc.z, vel.z)  );
+  
+
+
+  
 }
 
 
 /*
 Méthode qui va pencher la planche selon les axes X et Z.
  Arguments :
- L'angle float à modifier (en pratique rotX ou rotZ)
- Un boolean définissant s'il faut augmenter l'angle (true) ou le diminuer (false)
+   L'angle float à modifier (en pratique rotX ou rotZ)
+   Un boolean définissant s'il faut increase l'angle (true) ou le decrease (false)
  Return :
  Un nouvel angle float un peu augmenté ou diminué.
  */
-float tilt(float angle, boolean augmenter) {
+float tilt(float angle, boolean increase) {
 
-  float nouvelAngle = angle;  
-  if (augmenter) {
-    nouvelAngle += PI*vitesse/2000;
-    nouvelAngle = Math.min(nouvelAngle, PI/3);
+  float newAngle = angle;  
+  if (increase) {
+    newAngle += PI*speed/2000;
+    newAngle = Math.min(newAngle, PI/3);
   } else {
-    nouvelAngle -= PI*vitesse/2000;
-    nouvelAngle = Math.max(nouvelAngle, -PI/3);
+    newAngle -= PI*speed/2000;
+    newAngle = Math.max(newAngle, -PI/3);
   }
-  return nouvelAngle;
+  return newAngle;
 }
 
 
@@ -91,8 +89,8 @@ void mouseDragged() {
 
 
 void mouseWheel(MouseEvent event) {
-  vitesse -= event.getCount();
-  vitesse = min(vitesse, 100);
-  vitesse = max(vitesse, 1);
-  println(vitesse);
+  speed -= event.getCount();
+  speed = min(speed, 100);
+  speed = max(speed, 1);
+  println(speed);
 }

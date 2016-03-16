@@ -20,6 +20,7 @@ class Ball {
 
   void display() {
     pushMatrix();
+    noStroke();
     translate(location.x, 0, -location.z);
     //couleur balle
     fill(180,0,0);

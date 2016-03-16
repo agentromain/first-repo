@@ -24,14 +24,14 @@ void draw() {
    - Z sort du plan
    */
    
-  camera(0, -50, 1200, 0, 0, 0, 0, 1, 0);
+  camera(0, -1000, 500, 0, 0, 0, 0, 1, 0);
   background(255, 255, 255);
   //lumiere
   directionalLight(255, 255, 255, 0, 1, 0);
   ambientLight(102, 102, 102);
   //couleur plaque
   fill(0, 0, 255);
-  
+  stroke(0,0,0);
   rotateX(rotX);
   rotateZ(rotZ);
   box(side, boxHeight, side);

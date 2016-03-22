@@ -38,13 +38,17 @@ le bord dans cette direction.
   void checkEdges() {
     if (location.x + radius > side/2.0 && velocity.x > 0) {
       velocity.x *= -reboundCoef ;
+      location.x = side/2.0 -radius;
     } else if (location.x - radius< -side/2.0 && velocity.x < 0) {
       velocity.x *= -reboundCoef ;
+      location.x = -side/2.0 +radius;
     }
     if (location.z + radius > side/2.0 && velocity.z > 0) {
       velocity.z *= -reboundCoef ;
+      location.z = side/2.0 -radius;
     } else if (location.z - radius < -side/2.0 && velocity.z < 0) {
       velocity.z *= -reboundCoef ;
+      location.z = -side/2.0 +radius;
     }
   }
   

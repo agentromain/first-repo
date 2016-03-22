@@ -7,7 +7,7 @@ void settings() {
 void setup() {
   posCyls = new ArrayList() ;
   ball = new Ball();
-  initCylinder(cylinderBaseSize , cylinderHeight , cylinderResolution);
+  initCylinder(cylinderHeight, cylinderBaseSize, cylinderResolution);
   noStroke();
 }
 
@@ -32,7 +32,7 @@ void draw() {
   
   translate(width/2.0,height/2.0,0);
   pushMatrix();
-  //couleur plaque
+  
   if(isShift){
     shift();
   }else{

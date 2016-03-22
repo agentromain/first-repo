@@ -4,6 +4,8 @@ class Ball {
   private PVector friction;
   private PVector location;
   private PVector velocity;
+  private PVector prevV;
+  private PVector prevL;
   
   Ball() {
     location = new PVector(0, 0, 0);
@@ -13,9 +15,14 @@ class Ball {
 
   void update() {
     manageForces();
+    prevL = location.copy();
     location.add(velocity);
+    prevV = velocity.copy();
     velocity.add(gravityForce).add(friction);
     checkEdges();
+    for(PVector pos : posCyls){
+      checkCylinderCollision(pos);
+    }
   }
 
   void display() {
@@ -54,7 +61,22 @@ le bord dans cette direction.
   }
   
   
-
+  void checkCylinderCollision(PVector cylindre){
+    PVector distance = new PVector(location.x - cylindre.x,-location.z - cylindre.y);
+    if(distance.mag() <= radius + cylinderBaseSize && distance.dot(velocity) >=0 ){
+      println("rebond");
+      PVector normal = new PVector(prevL.add(prevV).x - cylindre.x, -prevL.z - cylindre.y);
+      normal = normal.normalize();
+      velocity.sub(normal.mult(2*velocity.dot(normal)));
+    }
+  }
+  
+  float distance(PVector centre){
+    float x = location.x - centre.x;
+    float y = -location.z - centre.y;
+    return sqrt( x*x + y*y);
+  }
+  
   void manageForces() {    
     gravityForce.x = sin(rotZ) * gravityConstant;
     gravityForce.z = sin(rotX) * gravityConstant;

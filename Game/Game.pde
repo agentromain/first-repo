@@ -6,7 +6,9 @@ void settings() {
 }
 
 void setup() {
+  posCyls = new ArrayList() ;
   ball = new Ball();
+  initCylinder(cylinderBaseSize , cylinderHeight , cylinderResolution);
   noStroke();
 }
 
@@ -29,19 +31,22 @@ void draw() {
   //lumiere
   directionalLight(255, 255, 255, 0, 1, 0);
   ambientLight(102, 102, 102);
+  
   //couleur plaque
+  if(isShift){
+    shift();
+  }else{
+    game();
+  }
   fill(0, 0, 255);
   stroke(0,0,0);
-  rotateX(rotX);
-  rotateZ(rotZ);
   box(side, boxHeight, side);
-
-
-
-  //Affichage et mouvement de la balle
   translate(0, -(radius+0.5*boxHeight), 0);
-  ball.update();
-  ball.display();  
+  ball.display();
+  for(PVector pos : posCyls){
+    translate(pos.x,0,pos.y);
+    drawCylinder();
+  }
 }
 
 
@@ -79,7 +84,20 @@ void mouseDragged() {
     posX = mouseX;
   }
 }
-
+void keyPressed(){
+  if(key == CODED){
+    if(keyCode == SHIFT){
+      isShift = true;
+    }
+  }
+}
+void keyReleased(){
+  if(key == CODED){
+    if(keyCode == SHIFT){
+      isShift = false;
+    }
+  }
+}
 
 void mouseWheel(MouseEvent event) {
   speed -= event.getCount();

@@ -10,7 +10,7 @@ final float boxHeight = 10;
 
 
 //Paramètres Caméra
-int cameraSize = 900;
+int windowSize = 900;
 
 //Angles de rotation
 float rotX = 0;

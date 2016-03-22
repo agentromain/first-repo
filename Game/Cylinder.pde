@@ -33,12 +33,13 @@ void initCylinder(float height, float base, int res) {
   bottomCylinder.endShape();
 }
 
-void drawCylinder(float x , float z){
+void drawCylinder(float x , float y){
   pushMatrix();
-  translate(x,0,z);
+  translate(x,0,y);
   translate(0, -(0.5*boxHeight), 0);
   shape(openCylinder);
   shape(topCylinder);
   shape(bottomCylinder);
   popMatrix();
+  
 }

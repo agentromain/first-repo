@@ -1,7 +1,7 @@
 Ball ball;
 
 void settings() {
-  size(cameraSize, cameraSize,P3D); 
+  size(windowSize, windowSize,P3D); 
 }
 
 void setup() {
@@ -24,13 +24,14 @@ void draw() {
    - Y pointe en bas
    - Z sort du plan
    */
-   
-  camera(0, -50, 1200, 0, 0, 0, 0, 1, 0);
   background(255, 255, 255);
   //lumiere
   directionalLight(255, 255, 255, 0, 1, 0);
   ambientLight(102, 102, 102);
   
+  
+  translate(width/2.0,height/2.0,0);
+  pushMatrix();
   //couleur plaque
   if(isShift){
     shift();
@@ -41,12 +42,12 @@ void draw() {
   stroke(0,0,0);
   box(side, boxHeight, side);
   ball.display();
-  //println(posCyls.size());
   
   for(PVector pos : posCyls){
     //println("xy " + pos.x + " ," + pos.y);
     drawCylinder(pos.x,pos.y);
   }
+  popMatrix();
 }
 
 

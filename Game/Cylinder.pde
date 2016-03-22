@@ -20,6 +20,8 @@ void initCylinder(float height, float base, int res) {
   topCylinder.beginShape(TRIANGLE_FAN);
   bottomCylinder.beginShape(TRIANGLE_FAN);
   //draw the border of the cylinder
+  bottomCylinder.vertex(0,0,0);
+  topCylinder.vertex(0,-height,0);
   for (int i = 0; i < x.length; i++) {
     openCylinder.vertex(x[i], 0 , y[i]);
     openCylinder.vertex(x[i] , -height,y[i]);
@@ -31,10 +33,10 @@ void initCylinder(float height, float base, int res) {
   bottomCylinder.endShape();
 }
 
-void drawCylinder(float x , float y , float z){
+void drawCylinder(float x , float z){
   pushMatrix();
-  translate(x,y,z);
-  translate(0, +(radius+0.5*boxHeight), 0);
+  translate(x,0,z);
+  translate(0, -(0.5*boxHeight), 0);
   shape(openCylinder);
   shape(topCylinder);
   shape(bottomCylinder);

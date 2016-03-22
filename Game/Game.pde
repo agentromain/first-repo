@@ -1,8 +1,7 @@
 Ball ball;
 
 void settings() {
-  size(cameraSize, cameraSize,P3D);
-  
+  size(cameraSize, cameraSize,P3D); 
 }
 
 void setup() {
@@ -41,13 +40,12 @@ void draw() {
   fill(0, 0, 255);
   stroke(0,0,0);
   box(side, boxHeight, side);
-  translate(0, -(radius+0.5*boxHeight), 0);
   ball.display();
   //println(posCyls.size());
   
   for(PVector pos : posCyls){
     //println("xy " + pos.x + " ," + pos.y);
-    drawCylinder(pos.x,0,pos.y);
+    drawCylinder(pos.x,pos.y);
   }
 }
 
@@ -86,6 +84,7 @@ void mouseDragged() {
     posX = mouseX;
   }
 }
+
 void keyPressed(){
   if(key == CODED){
     if(keyCode == SHIFT){
@@ -93,6 +92,7 @@ void keyPressed(){
     }
   }
 }
+
 void keyReleased(){
   if(key == CODED){
     if(keyCode == SHIFT){

@@ -37,7 +37,7 @@ final float mu = 0.01;
 final float frictionMagnitude = normalForce * mu;
 
 //===============Cylinder===========
-final float cylinderBaseSize = 20;
+final float cylinderBaseSize = 40;
 final float cylinderHeight = 100;
 final int cylinderResolution = 40;
 PShape openCylinder ;

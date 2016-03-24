@@ -41,12 +41,15 @@ void draw() {
   fill(0, 0, 255);
   stroke(0,0,0);
   box(side, boxHeight, side);
+  translate(0, -(radius+0.5*boxHeight), 0);
+  pushMatrix();
   ball.display();
   
   for(PVector pos : posCyls){
     //println("xy " + pos.x + " ," + pos.y);
     drawCylinder(pos.x,pos.y);
   }
+  popMatrix();
   popMatrix();
 }
 

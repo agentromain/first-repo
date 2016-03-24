@@ -14,26 +14,26 @@ class Ball {
 
 
   void update() {
-    manageForces();
-    prevL = location.copy();
-    location.add(velocity);
-    prevV = velocity.copy();
-    velocity.add(gravityForce).add(friction);
+    
     checkEdges();
     for(PVector pos : posCyls){
       checkCylinderCollision(pos);
     }
+    location.add(velocity);
+    manageForces();
+    velocity.add(gravityForce).add(friction);
+    
   }
 
   void display() {
     pushMatrix();
     noStroke();
-    translate(0, -(radius+0.5*boxHeight), 0);
-    translate(location.x, 0, -location.z);
+    translate(location.x, 0, location.z);
     //couleur balle
     fill(180,0,0);
     sphereDetail(60);
     sphere(radius);
+    
     popMatrix();
   }
   
@@ -62,13 +62,15 @@ le bord dans cette direction.
   
   
   void checkCylinderCollision(PVector cylindre){
-    PVector distance = new PVector(location.x - cylindre.x,-location.z - cylindre.y);
-    if(distance.mag() <= radius + cylinderBaseSize && distance.dot(velocity) >=0 ){
+    PVector distance = new PVector(cylindre.x -location.x, cylindre.y - location.z);
+    
+    if(distance.mag() <= radius + cylinderBaseSize +5 && distance.dot(velocity) >=0 ){
       println("rebond");
-      PVector normal = new PVector(prevL.add(prevV).x - cylindre.x, -prevL.z - cylindre.y);
-      normal = normal.normalize();
-      velocity.sub(normal.mult(2*velocity.dot(normal)));
+      PVector normal = new PVector(location.x - cylindre.x, -location.z - cylindre.y);
+      normal = normal.normalize();//.mult(-1);
+      velocity.sub(normal.mult(2*velocity.dot(normal))).mult(-1);
     }
+    
   }
   
   float distance(PVector centre){
@@ -79,7 +81,7 @@ le bord dans cette direction.
   
   void manageForces() {    
     gravityForce.x = sin(rotZ) * gravityConstant;
-    gravityForce.z = sin(rotX) * gravityConstant;
+    gravityForce.z = -sin(rotX) * gravityConstant;
   
     friction = velocity.copy();
     friction.mult(-1);

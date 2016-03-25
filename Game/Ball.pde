@@ -77,14 +77,14 @@ void checkCylinderCollision(PVector cylindre){
       float cosHorizontal = horizontal.dot(normal); // A.B = |A|*|B|*cos(AOB);
       boolean blocked = false; //Indique si la boule est bloquée (pour la coodonnée x et/ou z) entre un bord et un cylindre
 
-      while(distance.mag() < radius + cylinderBaseSize && blocked){
+      while(distance.mag() < radius + cylinderBaseSize && !blocked){
         
         if (location.x < side - radius){
-          location.x = 2*normal.x * cosHorizontal;
+          location.x += 2*normal.x * cosHorizontal;
           blocked |= true;
         }
         if (location.z < side - radius){
-          location.z = -2*normal.y * (1-cosHorizontal*cosHorizontal);
+          location.z += -2*normal.y * (1-cosHorizontal*cosHorizontal);
           blocked |= true;
         }
                 

@@ -35,6 +35,8 @@ void initCylinder(float height, float base, int res) {
 
 void drawCylinder(float x , float y){
   pushMatrix();
+  
+  translate(0, (radius+0.5*boxHeight), 0);
   translate(x,0,y);
   shape(openCylinder);
   shape(topCylinder);

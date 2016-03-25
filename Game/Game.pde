@@ -44,7 +44,7 @@ void draw() {
   translate(0, -(radius+0.5*boxHeight), 0);
   pushMatrix();
   ball.display();
-  
+    
   for(PVector pos : posCyls){
     //println("xy " + pos.x + " ," + pos.y);
     drawCylinder(pos.x,pos.y);

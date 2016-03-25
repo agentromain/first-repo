@@ -29,7 +29,7 @@ final float radius = 30;
 final float gravityConstant = 0.4;
 
 //Coefficient de rebonds
-final float reboundCoef = 0.4;
+final float reboundCoef = 0.6;
 
 //Constantes de force
 final float normalForce = 1;

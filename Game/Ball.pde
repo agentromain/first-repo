@@ -17,7 +17,6 @@ class Ball {
     for(PVector pos : posCyls){
       checkCylinderCollision(pos);
     }
-    println(location.z);
     location.add(velocity);
     manageForces();
     velocity.add(gravityForce).add(friction);   
@@ -70,31 +69,10 @@ void checkCylinderCollision(PVector cylindre){
        
     if (velocity.mag() >= 1){
       velocity.sub(normal.mult(2*velocity.dot(normal))).mult(-reboundCoef);
-
-    }else{
-            
-      PVector horizontal = new PVector (1,0);
-      float cosHorizontal = horizontal.dot(normal); // A.B = |A|*|B|*cos(AOB);
-      boolean blocked = false; //Indique si la boule est bloquée (pour la coodonnée x et/ou z) entre un bord et un cylindre
-
-      while(distance.mag() < radius + cylinderBaseSize && !blocked){
-        
-        if (location.x < side - radius){
-          location.x += 2*normal.x * cosHorizontal;
-          blocked |= true;
-        }
-        if (location.z < side - radius){
-          location.z += -2*normal.y * (1-cosHorizontal*cosHorizontal);
-          blocked |= true;
-        }
-                
-        //Mise à jour des variables pour la prochaine itération
-        distance.x = cylindre.x -location.x;
-        distance.y = cylindre.y - location.z;
-        normal.x = location.x - cylindre.x;
-        normal.y = location.z - cylindre.y;
-        normal = normal.normalize();
-      }
+    }
+   else{
+      velocity.x = 0;
+      velocity.z = 0;
     }
   }
 }

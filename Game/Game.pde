@@ -46,7 +46,6 @@ void draw() {
   ball.display();
     
   for(PVector pos : posCyls){
-    //println("xy " + pos.x + " ," + pos.y);
     drawCylinder(pos.x,pos.y);
   }
   popMatrix();

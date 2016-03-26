@@ -9,7 +9,7 @@ final float side  = 500;
 final float boxHeight = 10;
 
 
-//Paramètres Caméra
+//Paramètres Fenêtre
 int windowSize = 900;
 
 //Angles de rotation
@@ -23,7 +23,7 @@ int speed = 54;
 //============BALL==============
 
 //Rayon de la sphère
-final float radius = 30;
+final float radius = 40;
 
 //Constante de gravité
 final float gravityConstant = 0.4;
@@ -37,13 +37,7 @@ final float mu = 0.01;
 final float frictionMagnitude = normalForce * mu;
 
 //===============Cylinder===========
-final float cylinderBaseSize = 40;
+
+final float cylinderRadius = 40;
 final float cylinderHeight = 100;
 final int cylinderResolution = 40;
-PShape openCylinder ;
-PShape topCylinder ;
-PShape bottomCylinder ;
-ArrayList<PVector> posCyls ;
-
-//=== mode ===
- boolean isShift = false;

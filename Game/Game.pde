@@ -1,56 +1,37 @@
 Ball ball;
+boolean isShift = false;
 
 void settings() {
   size(windowSize, windowSize,P3D); 
 }
 
 void setup() {
-  posCyls = new ArrayList() ;
+  cylinderPositions = new ArrayList() ;
   ball = new Ball();
-  initCylinder(cylinderHeight, cylinderBaseSize, cylinderResolution);
+  initCylinder(cylinderRadius, cylinderResolution);
   noStroke();
 }
 
+
+//==========================MAIN-DRAW==========================
 void draw() {
-  /* 
-   Caméra :
-   Les 3 premiers arguments indiquent que l'oeil est placé en (0,-50,1200)
-   Les 3 suivants indiquent que l'on regarde le point (0,0,0)
-   Les 3 derniers indiquent que parmi (x,y,z) = (0,1,0), c'est y l'axe vertical
-   
-   Attention le repère est non droit.   
-   Les axes sont disposés comme suit :
-   - X pointe à droite
-   - Y pointe en bas
-   - Z sort du plan
-   */
-  background(255, 255, 255);
-  //lumiere
-  directionalLight(255, 255, 255, 0, 1, 0);
-  ambientLight(102, 102, 102);
+
+  personalSetup();
+  pushMatrix(); //PUSH 1 (prendre en compte le translate initial pour avoir (0,0,0) au milieu de l'écran
   
+  modeSelection();  
+  boxSetup();
+  pushMatrix(); //PUSH 2 (prendre en compte le translate pour que les objets soient posés sur la plaque et pas + haut ni + bas)
   
-  translate(width/2.0,height/2.0,0);
-  pushMatrix();
-  
-  if(isShift){
-    shift();
-  }else{
-    game();
-  }
-  fill(0, 0, 255);
-  stroke(0,0,0);
-  box(side, boxHeight, side);
-  translate(0, -(radius+0.5*boxHeight), 0);
-  pushMatrix();
   ball.display();
-    
-  for(PVector pos : posCyls){
-    drawCylinder(pos.x,pos.y);
-  }
-  popMatrix();
-  popMatrix();
+  drawCylinders();
+  
+  popMatrix(); //POP 1
+  popMatrix(); //POP 2
 }
+
+
+//==========================METHODS==========================
 
 
 /*
@@ -88,6 +69,7 @@ void mouseDragged() {
   }
 }
 
+
 void keyPressed(){
   if(key == CODED){
     if(keyCode == SHIFT){
@@ -95,6 +77,7 @@ void keyPressed(){
     }
   }
 }
+
 
 void keyReleased(){
   if(key == CODED){
@@ -104,9 +87,68 @@ void keyReleased(){
   }
 }
 
+
 void mouseWheel(MouseEvent event) {
   speed -= event.getCount();
   speed = min(speed, 100);
   speed = max(speed, 1);
   println(speed);
+}
+
+
+void mouseClicked(){
+  if(isShift){
+    float x = mouseX-width/2.0;
+    float y = mouseY-height/2.0;
+    
+    if(x >= -side/2.0  && x <= side/2.0   && y >= -side/2.0  && y <= side/2.0 && availablePlace(x,y, cylinderPositions) ){
+      cylinderPositions.add(new PVector(x,y));
+    } 
+  } 
+}
+
+
+/* Méthode qui renvoie true s'il est possible de créer un cylindre en (x,y) sans empiéter sur un cylindre qui existe déjà */
+boolean availablePlace(float x, float y, ArrayList<PVector> cylinderPositions){
+  boolean ok = true;
+  int i = 0;
+  float distance = 0;
+  
+  while (ok && i < cylinderPositions.size()){
+    distance = sqrt((x-cylinderPositions.get(i).x)*(x-cylinderPositions.get(i).x) + (y-cylinderPositions.get(i).y)*(y-cylinderPositions.get(i).y)); // sqrt [(x-x0)^2 + (y-y0)^2]
+    ok &=  distance >=  2*cylinderRadius;  
+    i++;
+  }
+  
+  return ok;
+}
+
+
+/*Méthode qui met en place les éléments de l'environnement*/
+void personalSetup(){
+  background(255, 255, 255);
+  directionalLight(255, 255, 255, 0, 1, 0);
+  ambientLight(102, 102, 102);
+  translate(width/2.0,height/2.0,0);
+}
+
+
+/* Méthode qui gère la sélection du mode SHIFT ou du mode normal*/
+void modeSelection(){
+  
+  if(isShift){
+     rotateX(-PI/2.0);
+   }else{
+     rotateX(rotX);
+     rotateZ(rotZ);
+     ball.update();
+  }
+}
+
+
+/* Méthode qui gère les paramètres de base de la plaque*/
+void boxSetup(){
+  fill(0, 0, 255);
+  box(side, boxHeight, side);
+  translate(0, -(radius+0.5*boxHeight), 0);
 }

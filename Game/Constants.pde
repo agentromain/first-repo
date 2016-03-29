@@ -23,10 +23,10 @@ int speed = 54;
 //============BALL==============
 
 //Rayon de la sphère
-final float radius = 40;
+final float radius = 20;
 
 //Constante de gravité
-final float gravityConstant = 0.4;
+final float gravityConstant = 0.2;
 
 //Coefficient de rebonds
 final float reboundCoef = 0.6;

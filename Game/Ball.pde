@@ -75,8 +75,9 @@ class Ball {
           velocity.sub(normal.mult(2*velocity.dot(normal))).mult(-reboundCoef);
         }
        else{
-          velocity.x = 0;
-          velocity.z = 0;
+           PVector tangent = new PVector (-normal.y, normal.x);
+           velocity.x = tangent.x;
+           velocity.z = tangent.y;
         }
       }
     }

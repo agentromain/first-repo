@@ -138,6 +138,10 @@ void modeSelection(){
   
   if(isShift){
      rotateX(-PI/2.0);
+     pushMatrix();
+     translate(0, -(radius+0.5*boxHeight), 0);
+     drawCylinder(mouseX-width/2.0,mouseY-height/2.0);
+     popMatrix();
    }else{
      rotateX(rotX);
      rotateZ(rotZ);

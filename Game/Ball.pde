@@ -12,11 +12,11 @@ class Ball {
   
 
   void update() {
-    checkEdges();
-    checkCylinderCollisions();
-    location.add(velocity);
     manageForces();
-    velocity.add(gravityForce).add(friction);   
+    velocity.add(gravityForce).add(friction);
+    location.add(velocity);
+    checkCylinderCollisions();
+    checkEdges();
   }
   
 
@@ -66,20 +66,14 @@ class Ball {
   void checkCylinderCollisions(){
     
     for(PVector cylindre : cylinderPositions){
-      
-      PVector distance = new PVector(cylindre.x -location.x, cylindre.y - location.z);
-      if(distance.mag() <= radius + cylinderRadius && distance.dot(velocity) >=0){       
-        PVector normal = new PVector(location.x - cylindre.x, -location.z - cylindre.y).normalize();  
-        
-        if (velocity.mag() >= 0.5){
-          velocity.sub(normal.mult(2*velocity.dot(normal))).mult(-reboundCoef);
-        }
-       else{
-           PVector tangent = new PVector (-normal.y, normal.x);
-           velocity.x = tangent.x;
-           velocity.z = tangent.y;
-        }
+      PVector cylPos = new PVector(cylindre.x,0,cylindre.y);
+      PVector normal = location.copy().sub(cylPos);
+      if(normal.mag() <= radius + cylinderRadius && normal.dot(velocity) <= 0){
+         normal.normalize();
+         location = normal.copy().mult(radius + cylinderRadius).add(cylPos);
+         velocity.sub(normal.mult(2*velocity.dot(normal)));
       }
+      location.add(velocity);
     }
   }
  

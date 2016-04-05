@@ -2,7 +2,7 @@ class Ball {
   
   private PVector gravityForce = new PVector(0, 0,0);
   private PVector friction;
-  private PVector location;
+  PVector location;
   private PVector velocity;
   
   Ball() {
@@ -71,7 +71,7 @@ class Ball {
       if(normal.mag() <= radius + cylinderRadius && normal.dot(velocity) <= 0){
          normal.normalize();
          location = normal.copy().mult(radius + cylinderRadius).add(cylPos);
-         velocity.sub(normal.mult(2*velocity.dot(normal)));
+         velocity.sub(normal.mult(2*velocity.dot(normal))).mult(reboundCoef);
       }
       location.add(velocity);
     }

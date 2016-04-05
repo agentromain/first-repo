@@ -1,3 +1,5 @@
+final float scale = 0.5;
+
 //============GAME==============
 
 //Nécessaires pour mouseDragged
@@ -5,12 +7,12 @@ double posY = mouseY;
 double posX = mouseX;
 
 //Paramètres de la plaque
-final float side  = 500;
-final float boxHeight = 10;
+final float side  = 500*scale;
+final float boxHeight = 10*scale;
 
 
 //Paramètres Fenêtre
-int windowSize = 900;
+int windowSize = 700;
 
 //Angles de rotation
 float rotX = 0;
@@ -23,7 +25,7 @@ int speed = 54;
 //============BALL==============
 
 //Rayon de la sphère
-final float radius = 20;
+final float radius = 20*scale;
 
 //Constante de gravité
 final float gravityConstant = 0.2;
@@ -38,6 +40,17 @@ final float frictionMagnitude = normalForce * mu;
 
 //===============Cylinder===========
 
-final float cylinderRadius = 40;
-final float cylinderHeight = 100;
+final float cylinderRadius = 40*scale;
+final float cylinderHeight = 100*scale;
 final int cylinderResolution = 40;
+
+//============Images==============
+
+ PGraphics imgData;
+ final int imgDataWidth = windowSize;
+ final int imgDataHeight = windowSize/5;
+ PGraphics imgTopView;
+ final int imgTVEdge = imgDataHeight-40;
+ PGraphics img3;
+ PGraphics img4;
+ 

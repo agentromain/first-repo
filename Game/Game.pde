@@ -6,6 +6,9 @@ void settings() {
 }
 
 void setup() {
+  imgData = createGraphics(imgDataWidth, imgDataHeight, P2D);
+  imgTopView = createGraphics(imgTVEdge, imgTVEdge, P2D);
+  
   cylinderPositions = new ArrayList() ;
   ball = new Ball();
   initCylinder(cylinderRadius, cylinderResolution);
@@ -15,9 +18,11 @@ void setup() {
 
 //==========================MAIN-DRAW==========================
 void draw() {
-
+  
   personalSetup();
   pushMatrix(); //PUSH 1 (prendre en compte le translate initial pour avoir (0,0,0) au milieu de l'écran
+
+  
 
   modeSelection();  
   boxSetup();
@@ -28,6 +33,10 @@ void draw() {
 
   popMatrix(); //POP 1
   popMatrix(); //POP 2
+  
+  noLights();
+  drawData();
+  image(imgData, -windowSize/2, windowSize*3/10);
 }
 
 
@@ -92,7 +101,6 @@ void mouseWheel(MouseEvent event) {
   speed -= event.getCount();
   speed = min(speed, 100);
   speed = max(speed, 1);
-  println(speed);
 }
 
 

@@ -8,7 +8,7 @@ void settings() {
 void setup() {
   imgData = createGraphics(imgDataWidth, imgDataHeight, P2D);
   imgTopView = createGraphics(imgTVEdge, imgTVEdge, P2D);
-  
+  scoreboard = createGraphics(scoreboardWidth, scoreboardHeight, P2D);
   cylinderPositions = new ArrayList() ;
   ball = new Ball();
   initCylinder(cylinderRadius, cylinderResolution);
@@ -37,6 +37,8 @@ void draw() {
   noLights();
   drawData();
   image(imgData, -windowSize/2, windowSize*3/10);
+  image(imgTopView, -windowSize/2 + 10 , windowSize*3/10 + 10 );
+  image(scoreboard, -windowSize/2 + imgTVEdge + 30, windowSize*3/10 + 5 );
 }
 
 

@@ -50,7 +50,11 @@ final int cylinderResolution = 40;
  final int imgDataWidth = windowSize;
  final int imgDataHeight = windowSize/5;
  PGraphics imgTopView;
- final int imgTVEdge = imgDataHeight-40;
- PGraphics img3;
+ final int imgTVEdge = imgDataHeight - 20;
+ PGraphics scoreboard;
+ final int scoreboardHeight = imgDataHeight -10;
+ final int scoreboardWidth = imgDataHeight -40;
  PGraphics img4;
+ 
+ //
  

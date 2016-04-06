@@ -33,6 +33,20 @@ void initCylinder(float base, int res) {
   bottomCylinder.endShape();
 }
 
+/* Méthode qui dessine les bords d'un cylindre */
+void drawEdges(float x [], float y []) {
+
+  bottomCylinder.vertex(0, 0, 0);
+  topCylinder.vertex(0, -cylinderHeight, 0);
+
+  for (int i = 0; i < x.length; i++) {
+    openCylinder.vertex(x[i], 0, y[i]);
+    openCylinder.vertex(x[i], -cylinderHeight, y[i]);
+    bottomCylinder.vertex(x[i], 0, y[i]); //disque du bas
+    topCylinder.vertex(x[i], -cylinderHeight, y[i]);//disque du haut
+  }
+}
+
 void drawCylinders() {
 
   for (PVector pos : cylinderPositions) {
@@ -50,19 +64,4 @@ void drawCylinder(float x, float y) {
   shape(bottomCylinder);
 
   popMatrix();
-}
-
-
-/* Méthode qui dessine les bords d'un cylindre */
-void drawEdges(float x [], float y []) {
-
-  bottomCylinder.vertex(0, 0, 0);
-  topCylinder.vertex(0, -cylinderHeight, 0);
-
-  for (int i = 0; i < x.length; i++) {
-    openCylinder.vertex(x[i], 0, y[i]);
-    openCylinder.vertex(x[i], -cylinderHeight, y[i]);
-    bottomCylinder.vertex(x[i], 0, y[i]); //disque du bas
-    topCylinder.vertex(x[i], -cylinderHeight, y[i]);//disque du haut
-  }
 }

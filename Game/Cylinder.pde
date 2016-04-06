@@ -5,7 +5,7 @@ PShape bottomCylinder ;
 ArrayList<PVector> cylinderPositions ;
 
 
-// Construction des 3 composantes du cylindre
+/* Méthode qui crée un cylindre (constructeur) */
 void initCylinder(float base, int res) {
 
   float angle;
@@ -33,6 +33,8 @@ void initCylinder(float base, int res) {
   bottomCylinder.endShape();
 }
 
+
+
 /* Méthode qui dessine les bords d'un cylindre */
 void drawEdges(float x [], float y []) {
 
@@ -47,21 +49,25 @@ void drawEdges(float x [], float y []) {
   }
 }
 
-void drawCylinders() {
 
-  for (PVector pos : cylinderPositions) {
-    drawCylinder(pos.x,pos.y);
-  }
+
+/* Méthode qui dessine tous les cylindre de la liste
+*/
+void drawCylinders() {
+  for (PVector pos : cylinderPositions)   
+     drawUniqueCylinder(pos.x, pos.y);
 }
 
-void drawCylinder(float x, float y) {
-  pushMatrix();
 
-  translate(0, (radius+0.5*boxHeight), 0);
-  translate(x, 0, y);
-  shape(openCylinder);
-  shape(topCylinder);
-  shape(bottomCylinder);
 
-  popMatrix();
+/* Méthode qui dessine un cylindre à l'emplacement donné par x et y
+*/
+void drawUniqueCylinder(float x, float y){
+    pushMatrix();
+    translate(0, (radius+0.5*boxHeight), 0);
+    translate(x, 0, y);
+    shape(openCylinder);
+    shape(topCylinder);
+    shape(bottomCylinder);
+    popMatrix(); 
 }

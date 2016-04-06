@@ -2,7 +2,7 @@ class Ball {
   
   private PVector gravityForce = new PVector(0, 0,0);
   private PVector friction;
-  PVector location;
+  private PVector location;
   private PVector velocity;
   
   Ball() {

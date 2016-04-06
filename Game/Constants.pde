@@ -28,7 +28,7 @@ int speed = 54;
 final float radius = 20*scale;
 
 //Constante de gravité
-final float gravityConstant = 0.2;
+final float gravityConstant = 0.6;
 
 //Coefficient de rebonds
 final float reboundCoef = 0.6;
@@ -46,15 +46,11 @@ final int cylinderResolution = 40;
 
 //============Images==============
 
- PGraphics imgData;
- final int imgDataWidth = windowSize;
- final int imgDataHeight = windowSize/5;
- PGraphics imgTopView;
- final int imgTVEdge = imgDataHeight - 20;
- PGraphics scoreboard;
- final int scoreboardHeight = imgDataHeight -10;
- final int scoreboardWidth = imgDataHeight -40;
- PGraphics img4;
+ final int bannerWidth = windowSize;
+ final int bannerHeight = windowSize/5; //Hauteur du bandeau
+ final int topViewEdge = bannerHeight - 20; //Côté du carré de TopView
+ final int scoreboardHeight = bannerHeight -10;
+ final int scoreboardWidth = bannerHeight -40;
  
  //
  

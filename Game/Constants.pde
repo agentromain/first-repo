@@ -56,5 +56,4 @@ final int cylinderResolution = 40;
  
  float points = 0;
  float lastPoints = 0;
- float normVelocity = 0;
  

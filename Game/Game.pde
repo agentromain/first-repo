@@ -13,6 +13,8 @@ void setup() {
   ball = new Ball();
   initCylinder(cylinderRadius, cylinderResolution);
   noStroke();
+  points = 0;
+  lastPoints = 0;
 }
 
 

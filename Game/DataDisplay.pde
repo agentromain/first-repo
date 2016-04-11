@@ -69,7 +69,7 @@ void drawScore(){
   scoreboard.textFont(loadFont("Candara-18.vlw"), 13);
   scoreboard.fill(0,0,0);
   scoreboard.text("Total Score :\n" + points, 10, 20);
-  scoreboard.text("Velocity :\n" + normVelocity, 10, 60);
+  scoreboard.text("Velocity :\n" + ball.velocity.mag(), 10, 60);
   scoreboard.text("Last Score :\n" + lastPoints, 10, 100);
   scoreboard.endDraw();
 }

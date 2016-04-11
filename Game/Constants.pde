@@ -49,11 +49,15 @@ final int cylinderResolution = 40;
  final int bannerWidth = windowSize;
  final int bannerHeight = windowSize/5; //Hauteur du bandeau
  final int topViewEdge = bannerHeight - 20; //Côté du carré de TopView
- final int scoreboardHeight = bannerHeight -10;
- final int scoreboardWidth = bannerHeight -40;
+ final int scoreboardHeight = bannerHeight - 10;
+ final int scoreboardWidth = bannerHeight - 40;
+ final int chartHeight = bannerHeight - 40;
+ final int chartWidth = bannerWidth - topViewEdge - scoreboardWidth - 50;
  
  //============Jeu==============
  
  float points = 0;
  float lastPoints = 0;
+ int sizeChartRect = 5;
+
  

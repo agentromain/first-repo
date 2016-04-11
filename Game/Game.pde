@@ -9,6 +9,8 @@ void setup() {
   banner = createGraphics(bannerWidth, bannerHeight, P2D);
   topView = createGraphics(topViewEdge, topViewEdge, P2D);
   scoreboard = createGraphics(scoreboardWidth, scoreboardHeight, P2D);
+  barChart = createGraphics(chartWidth, chartHeight, P2D);
+  
   cylinderPositions = new ArrayList() ;
   ball = new Ball();
   initCylinder(cylinderRadius, cylinderResolution);
@@ -39,6 +41,7 @@ void draw() {
   image(banner, -windowSize/2, windowSize*3/10);
   image(topView, -windowSize/2 + 10 , windowSize*3/10 + 10 );
   image(scoreboard, -windowSize/2 + topViewEdge + 30, windowSize*3/10 + 5 );
+  image(barChart, -windowSize/2 + topViewEdge + scoreboardWidth + 40, windowSize*3/10 + 5);
 }
 
 

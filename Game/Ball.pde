@@ -18,7 +18,7 @@ class Ball {
     checkCylinderCollisions();
     checkEdges();
     
-    normVelocity = sqrt(velocity.x*velocity.x + velocity.y*velocity.y + velocity.z*velocity.z);
+    normVelocity = velocity.mag();
   }
   
 

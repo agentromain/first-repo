@@ -1,9 +1,9 @@
 
 // The different add-on surfaces for score visualization
  PGraphics banner; // The background banner, the base of all data visualization
- PGraphics topView; // 
- PGraphics scoreboard;
- PGraphics img4;
+ PGraphics topView; // The mini-map visualization
+ PGraphics scoreboard; // The score visualization
+ PGraphics barChart; // The chart visualization
  
  
 
@@ -17,6 +17,7 @@ void drawAllData() {
   banner.background(229, 225, 174);
   drawTopView();
   drawScore();
+  drawChart();
   banner.endDraw();
 }
 
@@ -72,4 +73,13 @@ void drawScore(){
   scoreboard.text("Velocity :\n" + normVelocity, 10, 60);
   scoreboard.text("Last Score :\n" + lastPoints, 10, 100);
   scoreboard.endDraw();
+}
+
+/* Méthode qui affiche le cadre contenant le graphique des points par rapport au temps
+*/
+void drawChart(){
+   barChart.beginDraw();
+   barChart.background(240, 235, 200);
+   
+   barChart.endDraw();
 }

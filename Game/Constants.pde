@@ -52,5 +52,9 @@ final int cylinderResolution = 40;
  final int scoreboardHeight = bannerHeight -10;
  final int scoreboardWidth = bannerHeight -40;
  
- //
+ //============Jeu==============
+ 
+ float points = 0;
+ float lastPoints = 0;
+ float normVelocity = 0;
  

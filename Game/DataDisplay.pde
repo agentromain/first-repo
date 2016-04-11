@@ -32,7 +32,7 @@ void drawTopView() {
   topView.pushMatrix();
   
   //Adapt the axis system
-  topView.translate(topViewEdge/2.0,topViewEdge/2.0);
+  topView.translate(topViewEdge/2.0, topViewEdge/2.0);
   topView.scale(topViewEdge/side);
   
   //Draw the ball
@@ -55,18 +55,21 @@ void drawTopView() {
 */
 void drawScore(){
   scoreboard.beginDraw();
-  scoreboard.stroke(255,255,255);
+  scoreboard.background(229, 225, 174);
+  scoreboard.stroke(255, 255, 255);
     
   //White rectangle
   scoreboard.strokeWeight(5);
-  scoreboard.line(0,0, 0, scoreboardHeight);
-  scoreboard.line(0,scoreboardHeight, scoreboardWidth, scoreboardHeight);
-  scoreboard.line(scoreboardWidth,scoreboardHeight, scoreboardWidth, 0);
-  scoreboard.line(scoreboardWidth,0, 0, 0);
+  scoreboard.line(0, 0, 0, scoreboardHeight);
+  scoreboard.line(0, scoreboardHeight, scoreboardWidth, scoreboardHeight);
+  scoreboard.line(scoreboardWidth, scoreboardHeight, scoreboardWidth, 0);
+  scoreboard.line(scoreboardWidth, 0, 0, 0);
   
   //Text
-  scoreboard.textFont(loadFont("Candara-18.vlw"));
+  scoreboard.textFont(loadFont("Candara-18.vlw"), 13);
   scoreboard.fill(0,0,0);
-  scoreboard.text("Score\n coucou",10,50);
+  scoreboard.text("Total Score :\n" + points, 10, 20);
+  scoreboard.text("Velocity :\n" + normVelocity, 10, 60);
+  scoreboard.text("Last Score :\n" + lastPoints, 10, 100);
   scoreboard.endDraw();
 }

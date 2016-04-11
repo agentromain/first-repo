@@ -17,6 +17,8 @@ class Ball {
     location.add(velocity);
     checkCylinderCollisions();
     checkEdges();
+    
+    normVelocity = sqrt(velocity.x*velocity.x + velocity.y*velocity.y + velocity.z*velocity.z);
   }
   
 
@@ -41,22 +43,34 @@ class Ball {
     if (location.x + radius > side/2.0 && velocity.x > 0) {
       velocity.x *= -reboundCoef ;
       location.x = side/2.0 -radius;
+      
+      lastPoints = points;
+      points -= normVelocity;
     
     //Bord gauche
     } else if (location.x - radius< -side/2.0 && velocity.x < 0) {
       velocity.x *= -reboundCoef ;
       location.x = -side/2.0 +radius;
+      
+      lastPoints = points;
+      points -= normVelocity;
     }
     
     //Bord du bas
     if (location.z + radius > side/2.0 && velocity.z > 0) {
       velocity.z *= -reboundCoef ;
       location.z = side/2.0 -radius;
+      
+      lastPoints = points;
+      points -= normVelocity;
     
     //Bord du haut
     } else if (location.z - radius < -side/2.0 && velocity.z < 0) {
       velocity.z *= -reboundCoef ;
       location.z = -side/2.0 +radius;
+      
+      lastPoints = points;
+      points -= normVelocity;
     }
   }
   
@@ -72,6 +86,9 @@ class Ball {
          normal.normalize();
          location = normal.copy().mult(radius + cylinderRadius).add(cylPos);
          velocity.sub(normal.mult(2*velocity.dot(normal))).mult(reboundCoef);
+         
+         lastPoints = points;
+         points += normVelocity;
       }
       location.add(velocity);
     }

@@ -1,5 +1,10 @@
 Ball ball;
 boolean isShift = false;
+ArrayList<Double> scoreUntilNow = new ArrayList();
+int previousSecond = 0;
+int currentIndex = 0; //Used to remember scores in scoreUntilNow,  and the associated amount of "little square" in squareNeeded
+
+
 
 void settings() {
   size(windowSize, windowSize, P3D);
@@ -17,6 +22,8 @@ void setup() {
   noStroke();
   points = 0;
   lastPoints = 0;
+  scoreUntilNow.add(0d);
+  squareNeeded.add(0);
 }
 
 
@@ -36,6 +43,8 @@ void draw() {
   popMatrix(); //POP 1
   popMatrix(); //POP 2
   
+  operations_for_scoreChart();
+
   noLights();
   drawAllData();
   image(banner, -windowSize/2, windowSize*3/10);
@@ -47,6 +56,30 @@ void draw() {
 
 //=======================AUXILIAIRY METHODS=======================
 
+/*
+Méthode qui effectue les operations suivantes :
+-A chaque passage on met à jour le score dans scoreUntilNow à l'index currentIndex
+-Toutes les 5 secondes, on stocke (dans squareNeeded) le nombre de carrés nécessaires à la représentation du score des 5 dernières secondes.
+  Ensuite on augmente l'index pour analyse les 5 secondes d'après.
+*/
+void operations_for_scoreChart(){
+  
+  if (second()% frequency == 0 && second() != previousSecond){
+    
+    //Calculate how many squares are needed to represent the score
+    int sqNumber = (int)(points) / representedValue;
+    squareNeeded.set(currentIndex, sqNumber); //register this number in the array
+    
+    //add one next element in thes arrays to avoid OutOfBounds
+    squareNeeded.add(0);
+    scoreUntilNow.add(0d);
+    
+    previousSecond = second();    
+    currentIndex += 1; 
+
+  }
+   scoreUntilNow.set(currentIndex, (double) points);
+}
 
 /*
 Méthode qui va pencher la planche selon les axes X et Z.

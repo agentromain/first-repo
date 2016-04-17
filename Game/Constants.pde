@@ -28,10 +28,10 @@ int speed = 54;
 final float radius = 20*scale;
 
 //Constante de gravité
-final float gravityConstant = 0.6;
+final float gravityConstant = 0.2;
 
 //Coefficient de rebonds
-final float reboundCoef = 0.6;
+final float reboundCoef = 0.2;
 
 //Constantes de force
 final float normalForce = 1;
@@ -53,11 +53,15 @@ final int cylinderResolution = 40;
  final int scoreboardWidth = bannerHeight - 40;
  final int chartHeight = bannerHeight - 40;
  final int chartWidth = bannerWidth - topViewEdge - scoreboardWidth - 50;
+  int littleSqSize = 5;
+
  
  //============Jeu==============
  
  float points = 0;
  float lastPoints = 0;
- int sizeChartRect = 5;
+ int representedValue = 2; //Valeur que représente un carré du scoreChart
+ int frequency = 1; //Temps (seconde) avant chaque mise à jour du scoreChart ( ATTENTION 1 <= frequency <= 10)
+ 
 
  

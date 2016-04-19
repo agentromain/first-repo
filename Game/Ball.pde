@@ -17,6 +17,9 @@ class Ball {
     location.add(velocity);
     checkCylinderCollisions();
     checkEdges();
+    if(points < 0){
+      points = 0;
+    }
   }
 
 

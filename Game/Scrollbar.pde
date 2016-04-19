@@ -50,6 +50,7 @@ class HScrollbar {
 
     if (abs(newSliderPosition - sliderPosition) > 1) 
       sliderPosition = sliderPosition + (newSliderPosition - sliderPosition);
+    
   }
 
 

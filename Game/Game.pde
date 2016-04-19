@@ -1,6 +1,7 @@
 Ball ball;
 boolean isShift = false;
 ArrayList<Double> scoreUntilNow = new ArrayList();
+
 int previousSecond = 0;
 int currentIndex = 0; //Used to remember scores in scoreUntilNow,  and the associated amount of "little square" in squareNeeded
 HScrollbar hs;
@@ -31,7 +32,7 @@ void setup() {
 
 //==========================MAIN-DRAW==========================
 void draw() {
-
+  
   environmentSetup();
   pushMatrix(); //PUSH 1 (prendre en compte le translate initial pour avoir (0,0,0) au milieu de l'écran
 
@@ -154,7 +155,8 @@ void modeSelection() {
 //=======================INTERACTIVE METHODS=======================
 
 void mouseDragged() {
-  if (mouseY  < windowSize/2 + windowSize*0.3) {
+  if (mouseY  < windowSize/2 + windowSize*0.3 && !hs.locked) {
+    
     if ( abs((float)(mouseY-posY)) > abs((float)(mouseX-posX))) {
       rotX = tilt(rotX, mouseY < posY);
       posY = mouseY;

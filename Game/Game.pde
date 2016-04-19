@@ -3,6 +3,7 @@ boolean isShift = false;
 ArrayList<Double> scoreUntilNow = new ArrayList();
 int previousSecond = 0;
 int currentIndex = 0; //Used to remember scores in scoreUntilNow,  and the associated amount of "little square" in squareNeeded
+HScrollbar hs;
 
 
 
@@ -15,7 +16,7 @@ void setup() {
   topView = createGraphics(topViewEdge, topViewEdge, P2D);
   scoreboard = createGraphics(scoreboardWidth, scoreboardHeight, P2D);
   barChart = createGraphics(chartWidth, chartHeight, P2D);
-  
+
   cylinderPositions = new ArrayList() ;
   ball = new Ball();
   initCylinder(cylinderRadius, cylinderResolution);
@@ -24,12 +25,13 @@ void setup() {
   lastPoints = 0;
   scoreUntilNow.add(0d);
   squareNeeded.add(0);
+  hs = new HScrollbar( -windowSize/2 + topViewEdge + scoreboardWidth + 40, windowSize*3/10 + 13 + chartHeight, chartWidth, bannerHeight - chartHeight - 20);
 }
 
 
 //==========================MAIN-DRAW==========================
 void draw() {
-  
+
   environmentSetup();
   pushMatrix(); //PUSH 1 (prendre en compte le translate initial pour avoir (0,0,0) au milieu de l'écran
 
@@ -42,15 +44,16 @@ void draw() {
 
   popMatrix(); //POP 1
   popMatrix(); //POP 2
-  
+
   operations_for_scoreChart();
 
   noLights();
-  drawAllData();
+
   image(banner, -windowSize/2, windowSize*3/10);
-  image(topView, -windowSize/2 + 10 , windowSize*3/10 + 10 );
+  image(topView, -windowSize/2 + 10, windowSize*3/10 + 10 );
   image(scoreboard, -windowSize/2 + topViewEdge + 30, windowSize*3/10 + 5 );
   image(barChart, -windowSize/2 + topViewEdge + scoreboardWidth + 40, windowSize*3/10 + 5);
+  drawAllData();
 }
 
 
@@ -58,27 +61,26 @@ void draw() {
 
 /*
 Méthode qui effectue les operations suivantes :
--A chaque passage on met à jour le score dans scoreUntilNow à l'index currentIndex
--Toutes les 5 secondes, on stocke (dans squareNeeded) le nombre de carrés nécessaires à la représentation du score des 5 dernières secondes.
-  Ensuite on augmente l'index pour analyse les 5 secondes d'après.
-*/
-void operations_for_scoreChart(){
-  
-  if (second()% frequency == 0 && second() != previousSecond){
-    
+ -A chaque passage on met à jour le score dans scoreUntilNow à l'index currentIndex
+ -Toutes les 5 secondes, on stocke (dans squareNeeded) le nombre de carrés nécessaires à la représentation du score des 5 dernières secondes.
+ Ensuite on augmente l'index pour analyse les 5 secondes d'après.
+ */
+void operations_for_scoreChart() {
+
+  if (second()% frequency == 0 && second() != previousSecond) {
+
     //Calculate how many squares are needed to represent the score
     int sqNumber = (int)(points) / representedValue;
     squareNeeded.set(currentIndex, sqNumber); //register this number in the array
-    
+
     //add one next element in thes arrays to avoid OutOfBounds
     squareNeeded.add(0);
     scoreUntilNow.add(0d);
-    
-    previousSecond = second();    
-    currentIndex += 1; 
 
+    previousSecond = second();    
+    currentIndex += 1;
   }
-   scoreUntilNow.set(currentIndex, (double) points);
+  scoreUntilNow.set(currentIndex, (double) points);
 }
 
 /*
@@ -105,8 +107,8 @@ float tilt(float angle, boolean increase) {
 
 
 /* Méthode qui renvoie un boolean qui indique si le cylindre centré en x,y est ENTIEREMENT dans la plaque
-*/
-boolean isInside(float x ,float y ){
+ */
+boolean isInside(float x, float y ) {
   return x >= -side/2.0 + cylinderRadius && x <= side/2.0 - cylinderRadius   && y >= -side/2.0 + cylinderRadius && y <= side/2.0 - cylinderRadius;
 }
 
@@ -130,14 +132,14 @@ boolean availablePlace(float x, float y, ArrayList<PVector> cylinderPositions) {
 
 
 /* Méthode qui gère la sélection du mode SHIFT ou du mode normal
-*/
+ */
 void modeSelection() {
 
   if (isShift) {
     rotateX(-PI/2.0);
     pushMatrix();
     translate(0, -(radius+0.5*boxHeight), 0);
-    if(isInside(mouseX-width/2.0,mouseY-height/2.0)){
+    if (isInside(mouseX-width/2.0, mouseY-height/2.0)) {
       drawUniqueCylinder(mouseX-width/2.0, mouseY-height/2.0);
     }
     popMatrix();
@@ -152,12 +154,14 @@ void modeSelection() {
 //=======================INTERACTIVE METHODS=======================
 
 void mouseDragged() {
-  if ( abs((float)(mouseY-posY)) > abs((float)(mouseX-posX))) {
-    rotX = tilt(rotX, mouseY < posY);
-    posY = mouseY;
-  } else {
-    rotZ = tilt(rotZ, mouseX > posX);
-    posX = mouseX;
+  if (mouseY  < windowSize/2 + windowSize*0.3) {
+    if ( abs((float)(mouseY-posY)) > abs((float)(mouseX-posX))) {
+      rotX = tilt(rotX, mouseY < posY);
+      posY = mouseY;
+    } else {
+      rotZ = tilt(rotZ, mouseX > posX);
+      posX = mouseX;
+    }
   }
 }
 
@@ -165,7 +169,7 @@ void mouseDragged() {
 void keyPressed() {
   if (key == CODED) 
     if (keyCode == SHIFT) 
-      isShift = true; 
+      isShift = true;
 }
 
 
@@ -187,11 +191,11 @@ void mouseClicked() {
   if (isShift) {
     float x = mouseX-width/2.0;
     float y = mouseY-height/2.0;
-    
+
     boolean notOnTheBall = ((ball.location.x - x)*(ball.location.x - x) + (ball.location.z - y)*(ball.location.z - y) >= (radius+cylinderRadius)*(radius+cylinderRadius));
 
-    if (notOnTheBall && isInside(x,y) && availablePlace(x, y, cylinderPositions) ) 
-        cylinderPositions.add(new PVector(x, y));  
+    if (notOnTheBall && isInside(x, y) && availablePlace(x, y, cylinderPositions) ) 
+      cylinderPositions.add(new PVector(x, y));
   }
 }
 
@@ -211,7 +215,7 @@ void boxSetup() {
 
 
 /*Méthode qui met en place les éléments de l'environnement
-*/
+ */
 void environmentSetup() {
   background(255, 255, 255);
   directionalLight(255, 255, 255, 0, 1, 0);

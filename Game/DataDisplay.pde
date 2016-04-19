@@ -18,10 +18,13 @@ ArrayList<Integer> squareNeeded= new ArrayList();
 void drawAllData() {
 
   banner.beginDraw();
-  banner.background(229, 225, 174);
+  
   drawTopView();
   drawScore();
   drawChart();
+  drawScrollBar();
+  banner.background(229, 225, 174);
+
 
   banner.endDraw();
 }
@@ -85,16 +88,28 @@ void drawScore() {
 void drawChart() {
   barChart.beginDraw();
   barChart.background(240, 235, 200);
-  
+
   //Pour toutes les tranches de 5 secondes déjà écoulées
-  for (int i = 0; i < scoreUntilNow.size(); ++i){
-    
+  for (int i = 0; i < scoreUntilNow.size(); ++i) {
+
     //Pour chaque carré nécessaire à la représentation du score de ces 5 secondes
-    for (int j = 0; j < squareNeeded.get(i); ++j){
-      
+    for (int j = 0; j < squareNeeded.get(i); ++j) {
+
       //On affiche le carré décalé de (littleSqSize * i) en x et de (chartHeight - j*littleSqSize) en y
-      barChart.rect(littleSqSize*i, chartHeight-j*littleSqSize, littleSqSize, littleSqSize);
-    }   
+      
+      int sqSize = max ((int) (2 * littleSqSize * hs.getPos()), 1) ;
+      barChart.stroke(255);
+      barChart.fill(#3965D1);
+      barChart.rect(sqSize*i, chartHeight-j*sqSize, sqSize, sqSize);
+    }
   }
   barChart.endDraw();
+}
+
+
+void drawScrollBar() {
+  background(255);
+  hs.update();
+  hs.display();
+  println(hs.getPos());
 }

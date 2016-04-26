@@ -16,7 +16,7 @@ void settings() {
   size(800, 600);
 }
 void setup() {
-  img = loadImage("../board1.jpg");
+  img = loadImage("../board2.jpg");
   result = createImage(img.width, img.height, RGB);
   hs = new HScrollbar(0, 560, 800, 40);
   hs2 = new HScrollbar(0, 510, 800, 40);
@@ -27,7 +27,7 @@ void draw() {
   background(0, 0, 0);
   result.loadPixels();
   
-  selectHue(img,hs.getPos(), hs2.getPos());
+  selectHue(selectBrightness(img,5,125),hs.getPos(), hs2.getPos());
   result.updatePixels();
   image(sobel(convolute(result,kernel,3)), 0, 0);
    hs.update();
@@ -46,6 +46,19 @@ void tBinary(PImage img1, float threshold, color c1, color c2) {
       result.pixels[i] = c2;
     }
   }
+}
+
+PImage selectBrightness(PImage image, float Min , float Max){
+  PImage result = createImage(img.width, img.height, RGB);
+  for(int i = 0 ; i < image.width * image.height; ++i){
+    float b = brightness(image.pixels[i]);
+    if(b < Max && b > Min){
+      result.pixels[i] = image.pixels[i];
+    }else{
+      result.pixels[i] = color(0,0,0);
+    }
+  }
+  return result;
 }
 
 void thresholdBinary(PImage img, float ratio) {

@@ -211,7 +211,7 @@ void mouseClicked() {
 
 /* Méthode qui gère les paramètres de base de la plaque*/
 void boxSetup() {
-  fill(0, 0, 255);
+  fill(#3158B9);
   box(side, boxHeight, side);
   translate(0, -(radius+0.5*boxHeight), 0);
 }

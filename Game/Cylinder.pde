@@ -17,7 +17,9 @@ void initCylinder(float base, int res) {
     x[i] = sin(angle) * base;
     y[i] = cos(angle) * base;
   }
-
+  
+  noStroke();
+  fill(#D8CC8C);
   openCylinder = createShape();
   topCylinder = createShape();
   bottomCylinder = createShape();

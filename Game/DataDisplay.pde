@@ -52,7 +52,7 @@ void drawTopView() {
   topView.ellipse((ball.location.x), (ball.location.z), 2*radius, 2*radius);
 
   //Draw the cylinders 
-  topView.fill(0xFADD95);  
+  topView.fill(#D8CC8C);  
   for (PVector pos : cylinderPositions) {
     topView.ellipse(pos.x, pos.y, 2*cylinderRadius, 2*cylinderRadius);
   }

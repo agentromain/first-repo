@@ -1,6 +1,8 @@
 Ball ball;
 boolean isShift = false;
-ArrayList<Double> scoreUntilNow = new ArrayList();
+int bufferSize = 200;
+int loopNumber = 0;
+double [] scoreUntilNow = new double[bufferSize];
 
 int previousSecond = 0;
 int currentIndex = 0; //Used to remember scores in scoreUntilNow,  and the associated amount of "little square" in squareNeeded
@@ -24,8 +26,6 @@ void setup() {
   noStroke();
   points = 0;
   lastPoints = 0;
-  scoreUntilNow.add(0d);
-  squareNeeded.add(0);
   hs = new HScrollbar( -windowSize/2 + topViewEdge + scoreboardWidth + 40, windowSize*3/10 + 13 + chartHeight, chartWidth, bannerHeight - chartHeight - 20);
 }
 
@@ -67,21 +67,21 @@ Méthode qui effectue les operations suivantes :
  Ensuite on augmente l'index pour analyse les 5 secondes d'après.
  */
 void operations_for_scoreChart() {
-
+  
   if (second()% frequency == 0 && second() != previousSecond) {
 
     //Calculate how many squares are needed to represent the score
     int sqNumber = (int)(points) / representedValue;
-    squareNeeded.set(currentIndex, sqNumber); //register this number in the array
+    squareNeeded[currentIndex] = sqNumber; //register this number in the array
 
-    //add one next element in thes arrays to avoid OutOfBounds
-    squareNeeded.add(0);
-    scoreUntilNow.add(0d);
-
-    previousSecond = second();    
-    currentIndex += 1;
+    previousSecond = second();
+    loopNumber += (currentIndex+1 >= bufferSize ? 1 : 0);
+    currentIndex = (currentIndex + 1)  % bufferSize;
   }
-  scoreUntilNow.set(currentIndex, (double) points);
+  
+  playerBegan |= (points != 0);
+  currentIndex = (playerBegan ? currentIndex : 0);
+  scoreUntilNow[currentIndex] = points;
 }
 
 /*

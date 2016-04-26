@@ -4,7 +4,8 @@ PGraphics banner; // The background banner, the base of all data visualization
 PGraphics topView; // The mini-map visualization
 PGraphics scoreboard; // The score visualization
 PGraphics barChart; // The chart visualization
-ArrayList<Integer> squareNeeded= new ArrayList();
+int [] squareNeeded = new int[bufferSize];
+boolean playerBegan = false;
 
 
 
@@ -18,7 +19,7 @@ ArrayList<Integer> squareNeeded= new ArrayList();
 void drawAllData() {
 
   banner.beginDraw();
-  
+
   drawTopView();
   drawScore();
   drawChart();
@@ -89,18 +90,21 @@ void drawChart() {
   barChart.beginDraw();
   barChart.background(240, 235, 200);
 
-  //Pour toutes les tranches de 5 secondes déjà écoulées
-  for (int i = 0; i < scoreUntilNow.size(); ++i) {
+  if (playerBegan) {
 
-    //Pour chaque carré nécessaire à la représentation du score de ces 5 secondes
-    for (int j = 0; j < squareNeeded.get(i); ++j) {
+    //Pour toutes les tranches de 5 secondes déjà écoulées
+    for (int i = currentIndex; i < currentIndex + bufferSize; ++i) {
 
-      //On affiche le carré décalé de (littleSqSize * i) en x et de (chartHeight - j*littleSqSize) en y
-      
-      int sqSize = max ((int) (2 * littleSqSize * hs.getPos()), 1) ;
-      barChart.stroke(255);
-      barChart.fill(#3965D1);
-      barChart.rect(sqSize*i, chartHeight-j*sqSize, sqSize, sqSize);
+      //Pour chaque carré nécessaire à la représentation du score de ces 5 secondes
+      for (int j = 0; j < squareNeeded[i % bufferSize]; ++j) {
+
+        //On affiche le carré décalé de (littleSqSize * i) en x et de (chartHeight - j*littleSqSize) en y
+
+        int sqSize = max ((int) (2 * littleSqSize * hs.getPos()), 1) ;
+        barChart.stroke(255);
+        barChart.fill(#3965D1);
+        barChart.rect(sqSize*(i%bufferSize + loopNumber*bufferSize), chartHeight-j*sqSize, sqSize, sqSize);
+      }
     }
   }
   barChart.endDraw();
@@ -111,5 +115,4 @@ void drawScrollBar() {
   background(255);
   hs.update();
   hs.display();
-  println(hs.getPos());
 }

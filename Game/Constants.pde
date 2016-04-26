@@ -62,6 +62,7 @@ final int cylinderResolution = 40;
  float lastPoints = 0;
  int representedValue = 2; //Valeur que représente un carré du scoreChart
  int frequency = 1; //Temps (seconde) avant chaque mise à jour du scoreChart ( ATTENTION 1 <= frequency <= 10)
+
  
 
  

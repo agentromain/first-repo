@@ -7,6 +7,7 @@ double [] scoreUntilNow = new double[bufferSize];
 int previousSecond = 0;
 int currentIndex = 0; //Used to remember scores in scoreUntilNow,  and the associated amount of "little square" in squareNeeded
 HScrollbar hs;
+PFont police;
 
 
 
@@ -15,6 +16,7 @@ void settings() {
 }
 
 void setup() {
+  police = loadFont("Candara-18.vlw");
   banner = createGraphics(bannerWidth, bannerHeight, P2D);
   topView = createGraphics(topViewEdge, topViewEdge, P2D);
   scoreboard = createGraphics(scoreboardWidth, scoreboardHeight, P2D);

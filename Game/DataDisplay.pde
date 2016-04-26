@@ -11,6 +11,8 @@ boolean playerBegan = false;
 
 
 
+
+
 //====================MAIN DATA DISPLAY METHOD====================
 
 
@@ -76,7 +78,7 @@ void drawScore() {
   scoreboard.line(scoreboardWidth, 0, 0, 0);
 
   //Text
-  scoreboard.textFont(loadFont("Candara-18.vlw"), 13);
+  scoreboard.textFont(police, 13);
   scoreboard.fill(0, 0, 0);
   scoreboard.text("Total Score :\n" + points, 10, 20);
   scoreboard.text("Velocity :\n" + ball.velocity.mag(), 10, 60);

@@ -1,40 +1,48 @@
+import processing.video.*;
+Capture cam;
 PImage img;
 PImage result;
-HScrollbar hs;
-HScrollbar hs2;
-float[][] kernel = {{1,4,7,4,1},
-  {4,16,26,16,4},
-  {7,26,41,26,7},
-  {4,16,26,16,4},
-  {1,4,7,4,1}
-  };
-float[][] kernel1 = { { 0, 0, 0 },
-  { 0, 2, 0 },
-  { 0, 0, 0 }};
-  
+float[][] kernel = {{1, 4, 7, 4, 1}, 
+  {4, 16, 26, 16, 4}, 
+  {7, 26, 41, 26, 7}, 
+  {4, 16, 26, 16, 4}, 
+  {1, 4, 7, 4, 1}
+};
+
 void settings() {
   size(800, 600);
 }
 void setup() {
-  img = loadImage("../board2.jpg");
-  result = createImage(img.width, img.height, RGB);
-  hs = new HScrollbar(0, 560, 800, 40);
-  hs2 = new HScrollbar(0, 510, 800, 40);
+  String[] cameras = Capture.list();
+  if (cameras.length == 0) {
+    println("There are no cameras available for capture.");
+    exit();
+  } else {
+    println("Available cameras:");
+    for (int i = 0; i < cameras.length; i++) {
+      println(cameras[i]);
+    }
+    cam = new Capture(this, cameras[3]);
+    cam.start();
+  }
+  
   //noLoop(); // no interactive behaviour: draw() will be called only once.
 }
 
 void draw() {
   background(0, 0, 0);
+  if (cam.available() == true) {
+    cam.read();
+  }
+
+  img = cam.get();
+  result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  
-  selectHue(selectBrightness(img,5,125),hs.getPos(), hs2.getPos());
+  selectHue(selectBrightness(img, 5, 125), 70, 131);
   result.updatePixels();
-  image(sobel(convolute(result,kernel,3)), 0, 0);
-   hs.update();
-   hs.display();
-   hs2.update();
-   hs2.display();
-   
+  PImage im = sobel(convolute(result, kernel, 3));
+  image(img, 0, 0);
+  hough(im);
 }
 
 void tBinary(PImage img1, float threshold, color c1, color c2) {
@@ -48,14 +56,14 @@ void tBinary(PImage img1, float threshold, color c1, color c2) {
   }
 }
 
-PImage selectBrightness(PImage image, float Min , float Max){
+PImage selectBrightness(PImage image, float Min, float Max) {
   PImage result = createImage(img.width, img.height, RGB);
-  for(int i = 0 ; i < image.width * image.height; ++i){
+  for (int i = 0; i < image.width * image.height; ++i) {
     float b = brightness(image.pixels[i]);
-    if(b < Max && b > Min){
+    if (b < Max && b > Min) {
       result.pixels[i] = image.pixels[i];
-    }else{
-      result.pixels[i] = color(0,0,0);
+    } else {
+      result.pixels[i] = color(0, 0, 0);
     }
   }
   return result;
@@ -76,16 +84,16 @@ void toHue(PImage img) {
   }
 }
 
-void selectHue(PImage img, float max, float min) {
+void selectHue(PImage img, int max, int min) {
   if (max < min) {
-    float b = min;
+    int b = min;
     min = max;
     max = b;
   }
   color c = color(0, 0, 0);
   for (int i = 0; i < img.width * img.height; ++i) {
     float h = hue(img.pixels[i]);
-    if (max*255 >= h && h >= min*255) {
+    if (max >= h && h >= min) {
       result.pixels[i] = img.pixels[i];
     } else {
       result.pixels[i] = c;
@@ -120,7 +128,7 @@ PImage sobel(PImage img1) {
     { 0, 0, 0 } };
   // clear the image
   for (int i = 0; i < img1.width * img1.height; i++) {
-    result.pixels[i] = color(0,0,0);
+    result.pixels[i] = color(0, 0, 0);
   }
   float max=0;
   float[] buffer = new float[img1.width * img1.height];
@@ -128,7 +136,7 @@ PImage sobel(PImage img1) {
   // *************************************
   // Implement here the double convolution
   // *************************************
-  
+
   int side = 3;
   for (int i = 1; i < img1.height - 1; ++i) {
     for (int j = 1; j < img1.width - 1; ++j) {
@@ -141,11 +149,13 @@ PImage sobel(PImage img1) {
         }
       }
       float b = brightness(img1.pixels[i*img1.width + j]);
-      if(b > max ){max = b;}
+      if (b > max ) {
+        max = b;
+      }
       buffer[i*img1.width + j] = sqrt(vsum*vsum + hsum*hsum);
     }
   }
-  
+
   for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
     for (int x = 2; x < img.width - 2; x++) { // Skip left and right
       if (buffer[y * img.width + x] > (int)(max * 0.3f)) { // 30% of the max
@@ -158,102 +168,84 @@ PImage sobel(PImage img1) {
   return result;
 }    
 
-//==============================
-class HScrollbar {
-  float barWidth; //Bar’s width in pixels
-  float barHeight; //Bar’s height in pixels
-  float xPosition; //Bar’s x position in pixels
-  float yPosition; //Bar’s y position in pixels
-  float sliderPosition, newSliderPosition; //Position of slider
-  float sliderPositionMin, sliderPositionMax; //Max and min values of slider
-  boolean mouseOver; //Is the mouse over the slider?
-  boolean locked; //Is the mouse clicking and dragging the slider now?
-  /**
-   * @brief Creates a new horizontal scrollbar
-   *
-   * @param x The x position of the top left corner of the bar in pixels
-   * @param y The y position of the top left corner of the bar in pixels
-   * @param w The width of the bar in pixels
-   * @param h The height of the bar in pixels
-   */
-  HScrollbar (float x, float y, float w, float h) {
-    barWidth = w;
-    barHeight = h;
-    xPosition = x;
-    yPosition = y;
-    sliderPosition = xPosition + barWidth/2 - barHeight/2;
-    newSliderPosition = sliderPosition;
-    sliderPositionMin = xPosition;
-    sliderPositionMax = xPosition + barWidth - barHeight;
-  }
-  /**
-   * @brief Updates the state of the scrollbar according to the mouse movement
-   */
-  void update() {
-    if (isMouseOver()) {
-      mouseOver = true;
-    } else {
-      mouseOver = false;
-    }
-    if (mousePressed && mouseOver) {
-      locked = true;
-    }
-    if (!mousePressed) {
-      locked = false;
-    }
-    if (locked) {
-      newSliderPosition = constrain(mouseX - barHeight/2, sliderPositionMin, sliderPositionMax);
-    }
-    if (abs(newSliderPosition - sliderPosition) > 1) {
-      sliderPosition = sliderPosition + (newSliderPosition - sliderPosition);
+
+void hough(PImage edgeImg){
+  float discretizationStepsPhi = 0.06f;
+  float discretizationStepsR = 2.5f;
+  // dimensions of the accumulator
+  int phiDim = (int) (Math.PI / discretizationStepsPhi);
+  int rDim = (int) (((edgeImg.width + edgeImg.height) * 2 + 1) / discretizationStepsR);
+  // our accumulator (with a 1 pix margin around)
+  int[] accumulator = new int[(phiDim + 2) * (rDim + 2)];
+  // Fill the accumulator: on edge points (ie, white pixels of the edge
+  // image), store all possible (r, phi) pairs describing lines going
+  // through the point.
+  for (int y = 0; y < edgeImg.height; y++) {
+    for (int x = 0; x < edgeImg.width; x++) {
+      // Are we on an edge?
+      if (brightness(edgeImg.pixels[y * edgeImg.width + x]) != 0) {
+        // ...determine here all the lines (r, phi) passing through
+        // pixel (x,y), convert (r,phi) to coordinates in the
+        // accumulator, and increment accordingly the accumulator.
+        // Be careful: r may be negative, so you may want to center onto
+        // the accumulator with something like: r += (rDim - 1) / 2
+        for (int i = 0; i < phiDim; ++i) {
+          double phi = i*discretizationStepsPhi;
+          double r = x*Math.cos(phi) + y*Math.sin(phi);
+          r /= discretizationStepsR;
+          r+= (rDim - 1) / 2;
+          accumulator[(int) ((i+1) * (rDim+2)) + (int)(r+1)] += 1;
+        }
+      }
     }
   }
-  /**
-   * @brief Clamps the value into the interval
-   *
-   * @param val The value to be clamped
-   * @param minVal Smallest value possible
-   * @param maxVal Largest value possible
-   *
-   * @return val clamped into the interval [minVal, maxVal]
-   */
-  float constrain(float val, float minVal, float maxVal) {
-    return min(max(val, minVal), maxVal);
+
+  PImage houghImg = createImage(rDim + 2, phiDim + 2, ALPHA);
+  for (int i = 0; i < accumulator.length; i++) {
+    houghImg.pixels[i] = color(min(255, accumulator[i]));
   }
-  /**
-   * @brief Gets whether the mouse is hovering the scrollbar
-   *
-   * @return Whether the mouse is hovering the scrollbar
-   */
-  boolean isMouseOver() {
-    if (mouseX > xPosition && mouseX < xPosition+barWidth &&
-      mouseY > yPosition && mouseY < yPosition+barHeight) {
-      return true;
-    } else {
-      return false;
+  houghImg.resize(400, 400);
+  houghImg.updatePixels();
+  for (int idx = 0; idx < accumulator.length; idx++) {
+    if (accumulator[idx] > 200) {
+      // first, compute back the (r, phi) polar coordinates:
+      int accPhi = (int) (idx / (rDim + 2)) - 1;
+      int accR = idx - (accPhi + 1) * (rDim + 2) - 1;
+      float r = (accR - (rDim - 1) * 0.5f) * discretizationStepsR;
+      float phi = accPhi * discretizationStepsPhi;
+      // Cartesian equation of a line: y = ax + b
+      // in polar, y = (-cos(phi)/sin(phi))x + (r/sin(phi))
+      // => y = 0 : x = r / cos(phi)
+      // => x = 0 : y = r / sin(phi)
+      // compute the intersection of this line with the 4 borders of
+      // the image
+      int x0 = 0;
+      int y0 = (int) (r / sin(phi));
+      int x1 = (int) (r / cos(phi));
+      int y1 = 0;
+      int x2 = edgeImg.width;
+      int y2 = (int) (-cos(phi) / sin(phi) * x2 + r / sin(phi));
+      int y3 = edgeImg.width;
+      int x3 = (int) (-(y3 - r / sin(phi)) * (sin(phi) / cos(phi)));
+      // Finally, plot the lines
+      stroke(204, 102, 0);
+      if (y0 > 0) {
+        if (x1 > 0)
+          line(x0, y0, x1, y1);
+        else if (y2 > 0)
+          line(x0, y0, x2, y2);
+        else
+          line(x0, y0, x3, y3);
+      } else {
+        if (x1 > 0) {
+          if (y2 > 0)
+            line(x1, y1, x2, y2);
+          else
+            line(x1, y1, x3, y3);
+        } else
+          line(x2, y2, x3, y3);
+      }
     }
   }
-  /**
-   * @brief Draws the scrollbar in its current state
-   */
-  void display() {
-    noStroke();
-    fill(204);
-    rect(xPosition, yPosition, barWidth, barHeight);
-    if (mouseOver || locked) {
-      fill(0, 0, 0);
-    } else {
-      fill(102, 102, 102);
-    }
-    rect(sliderPosition, yPosition, barHeight, barHeight);
-  }
-  /**
-   * @brief Gets the slider position
-   *
-   * @return The slider position in the interval [0,1]
-   * corresponding to [leftmost position, rightmost position]
-   */
-  float getPos() {
-    return (sliderPosition - xPosition)/(barWidth - barHeight);
-  }
+  
 }

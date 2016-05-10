@@ -28,7 +28,7 @@ int speed = 54;
 final float radius = 20*scale;
 
 //Constante de gravité
-final float gravityConstant = 0.2;
+final float gravityConstant = 0.05;
 
 //Coefficient de rebonds
 final float reboundCoef = 0.2;

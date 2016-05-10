@@ -1,7 +1,8 @@
 Ball ball;
 boolean isShift = false;
-int bufferSize = 200;
+
 int loopNumber = 0;
+int bufferSize = 500; //The number of scores that are displayed at the same time
 double [] scoreUntilNow = new double[bufferSize];
 
 int previousSecond = 0;
@@ -83,7 +84,9 @@ void operations_for_scoreChart() {
   
   playerBegan |= (points != 0);
   currentIndex = (playerBegan ? currentIndex : 0);
+  
   scoreUntilNow[currentIndex] = points;
+  
 }
 
 /*

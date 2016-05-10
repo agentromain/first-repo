@@ -38,7 +38,7 @@ void draw() {
   img = cam.get();
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  selectHue(selectBrightness(img, 5, 149), 70, 131);
+  selectHue(selectBrightness(img, 5, 146), 70, 131);
   result.updatePixels();
   PImage im = sobel(convolute(result, kernel, 3));
   image(img, 0, 0);
@@ -199,24 +199,48 @@ void hough(PImage edgeImg, int nLines ) {
       }
     }
   }
-  
+
   ArrayList<Integer> bestCandidates = new ArrayList();
-  /*PImage houghImg = createImage(rDim + 2, phiDim + 2, ALPHA);
-   for (int i = 0; i < accumulator.length; i++) {
-   houghImg.pixels[i] = color(min(255, accumulator[i]));
-   }
-   houghImg.resize(400, 400);
-   houghImg.updatePixels();
-   */
+  // size of the region we search for a local maximum
+  int neighbourhood = 10;
+  // only search around lines with more that this amount of votes
+  // (to be adapted to your image)
   int minVotes = 200;
-  for (int idx = 0; idx < accumulator.length; idx++) {
-    if (accumulator[idx] > minVotes) {
-      bestCandidates.add(idx);
+  for (int accR = 0; accR < rDim; accR++) {
+    for (int accPhi = 0; accPhi < phiDim; accPhi++) {
+      // compute current index in the accumulator
+      int idx = (accPhi + 1) * (rDim + 2) + accR + 1;
+      if (accumulator[idx] > minVotes) {
+        boolean bestCandidate=true;
+        // iterate over the neighbourhood
+        for (int dPhi=-neighbourhood/2; dPhi < neighbourhood/2+1; dPhi++) {
+          // check we are not outside the image
+          if ( accPhi+dPhi < 0 || accPhi+dPhi >= phiDim) continue;
+          for (int dR=-neighbourhood/2; dR < neighbourhood/2 +1; dR++) {
+            // check we are not outside the image
+            if (accR+dR < 0 || accR+dR >= rDim) continue;
+            int neighbourIdx = (accPhi + dPhi + 1) * (rDim + 2) + accR + dR + 1;
+            if (accumulator[idx] < accumulator[neighbourIdx]) {
+              // the current idx is not a local maximum!
+              bestCandidate=false;
+              break;
+            }
+          }
+          if (!bestCandidate) break;
+        }
+        if (bestCandidate) {
+          // the current idx *is* a local maximum
+          bestCandidates.add(idx);
+        }
+      }
     }
   }
+
+
+
   //println("size:" + bestCandidates.size());
   bestCandidates.sort(new HoughComparator(accumulator));
-  for (int i = 0 ; i < nLines && i < bestCandidates.size() ; ++i) {
+  for (int i = 0; i < nLines && i < bestCandidates.size(); ++i) {
     int idx = bestCandidates.get(i);
     // first, compute back the (r, phi) polar coordinates:
     int accPhi = (int) (idx / (rDim + 2)) - 1;

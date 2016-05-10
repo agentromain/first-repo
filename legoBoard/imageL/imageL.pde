@@ -42,7 +42,7 @@ void draw() {
   result.updatePixels();
   PImage im = sobel(convolute(result, kernel, 3));
   image(img, 0, 0);
-  hough(im, 10);
+  getIntersections(hough(im, 4));
 }
 
 void tBinary(PImage img1, float threshold, color c1, color c2) {
@@ -169,9 +169,10 @@ PImage sobel(PImage img1) {
 }    
 
 
-void hough(PImage edgeImg, int nLines ) {
+ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
   float discretizationStepsPhi = 0.06f;
   float discretizationStepsR = 2.5f;
+  ArrayList<PVector> result = new ArrayList();
   // dimensions of the accumulator
   int phiDim = (int) (Math.PI / discretizationStepsPhi);
   int rDim = (int) (((edgeImg.width + edgeImg.height) * 2 + 1) / discretizationStepsR);
@@ -251,6 +252,7 @@ void hough(PImage edgeImg, int nLines ) {
     // in polar, y = (-cos(phi)/sin(phi))x + (r/sin(phi))
     // => y = 0 : x = r / cos(phi)
     // => x = 0 : y = r / sin(phi)
+    result.add(new PVector(r, phi));
     // compute the intersection of this line with the 4 borders of
     // the image
     int x0 = 0;
@@ -280,6 +282,7 @@ void hough(PImage edgeImg, int nLines ) {
         line(x2, y2, x3, y3);
     }
   }
+  return result;
 }
 
 class HoughComparator implements java.util.Comparator<Integer> {
@@ -293,4 +296,25 @@ class HoughComparator implements java.util.Comparator<Integer> {
       || (accumulator[l1] == accumulator[l2] && l1 < l2)) return -1;
     return 1;
   }
+}
+
+ArrayList<PVector> getIntersections(ArrayList<PVector> lines) {
+  ArrayList<PVector> intersections = new ArrayList<PVector>();
+  for (int i = 0; i < lines.size() - 1; i++) {
+    PVector l1 = lines.get(i);
+    for (int j = i + 1; j < lines.size(); j++) {
+      PVector l2 = lines.get(j);
+      // compute the intersection and add it to ’intersections’
+      
+      double d = cos(l2.y) * sin(l1.y) - cos(l1.y) * sin(l2.y);
+      float x = (float)((l2.x * sin(l1.y) - l1.x * sin(l2.y))/d);
+      float y = (float)((-l2.x * cos(l1.y) + l1.x * cos(l2.y))/d);
+      intersections.add(new PVector(x, y));
+      
+      // draw the intersection
+      fill(255, 128, 0);
+      ellipse(x, y, 10, 10);
+    }
+  }
+  return intersections;
 }

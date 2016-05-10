@@ -88,24 +88,30 @@ void drawScore() {
 
 /* Méthode qui affiche la surface d'affichage des points en fonction du temps
  */
+
+
 void drawChart() {
   barChart.beginDraw();
   barChart.background(240, 235, 200);
 
   if (playerBegan) {
-
+     
     //Pour toutes les tranches de 5 secondes déjà écoulées
     for (int i = currentIndex; i < currentIndex + bufferSize; ++i) {
 
       //Pour chaque carré nécessaire à la représentation du score de ces 5 secondes
       for (int j = 0; j < squareNeeded[i % bufferSize]; ++j) {
 
-        //On affiche le carré décalé de (littleSqSize * i) en x et de (chartHeight - j*littleSqSize) en y
-
+        //sqSize cannot be under 1
         int sqSize = max ((int) (2 * littleSqSize * hs.getPos()), 1) ;
         barChart.stroke(255);
         barChart.fill(#3965D1);
-        barChart.rect(sqSize*(i%bufferSize + loopNumber*bufferSize), chartHeight-j*sqSize, sqSize, sqSize);
+
+        if (i % bufferSize < currentIndex) {
+          barChart.rect(sqSize*(i%bufferSize + loopNumber*bufferSize), chartHeight-j*sqSize, sqSize, sqSize);
+        } else {
+          barChart.rect(sqSize*(i%bufferSize + (loopNumber-1)*bufferSize), chartHeight-j*sqSize, sqSize, sqSize);
+        }
       }
     }
   }

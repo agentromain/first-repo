@@ -9,11 +9,18 @@ float[][] kernel = {{1, 4, 7, 4, 1},
   {1, 4, 7, 4, 1}
 };
 
+float[][] kernel1 = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
+
 void settings() {
   size(800, 600);
 }
 void setup() {
-  img = loadImage("../board2.jpg");
+  img = loadImage("../board1.jpg");
   /*String[] cameras = Capture.list();
   if (cameras.length == 0) {
     println("There are no cameras available for capture.");
@@ -27,7 +34,7 @@ void setup() {
     cam.start();
   }*/
 
-  //noLoop(); // no interactive behaviour: draw() will be called only once.
+  noLoop(); // no interactive behaviour: draw() will be called only once.
 }
 
 void draw() {
@@ -39,13 +46,12 @@ void draw() {
   //img = cam.get();
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  selectHue(selectBrightness(img, 0, 172), 100, 137);
+  selectHue(selectBrightness(img, 0, 124), 116, 136);
   result.updatePixels();
   //image(result, 0, 0);
-  
-  PImage im = sobel(convolute(result, kernel, 3));
+  PImage im = sobel(selectBrightness(convolute(result, kernel, 5), 0, 124));
   image(im, 0, 0);
-  //getIntersections(hough(im, 4));
+  getIntersections(hough(im, 6));
   
 }
 
@@ -107,8 +113,8 @@ void selectHue(PImage img, int max, int min) {
 
 PImage convolute(PImage img1, float[][] kernel, int side) {
   PImage result = createImage(img.width, img.height, ALPHA);
-  for (int i = 1; i < img1.height - 1; ++i) {
-    for (int j = 1; j < img1.width - 1; ++j) {
+  for (int i = side/2; i < img1.height - side/2; ++i) {
+    for (int j = side/2; j < img1.width - side/2; ++j) {
       float sum = 0;
       float tot = 0;
       for (int k = 0; k < side; ++k) {

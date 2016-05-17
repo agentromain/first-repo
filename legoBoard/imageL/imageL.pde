@@ -21,7 +21,7 @@ float[][] kernel1 = {{0, 0, 0, 5, 0, 0, 0},
 };
 
 void settings() {
-  size(800, 600);
+  size(1200, 300);
 }
 void setup() {
   graph = new QuadGraph();
@@ -49,6 +49,7 @@ void draw() {
    }*/
 
   //img = cam.get();
+  img.resize(400, 300);
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
   selectHue(selectBrightness(img, 0, 148), 69, 139);
@@ -57,8 +58,8 @@ void draw() {
   selectSaturation(result, 108, 255);
   result.updatePixels();
   //image(result, 0, 0);
+  image(img, 0, 0);
   PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 124));
-  image(im, 0, 0);
   ArrayList<PVector> lines = hough(im, 4);
   getIntersections(lines);
   graph.build(lines, img.width, img.height);
@@ -93,7 +94,7 @@ void displayQuads(List<int[]> quads, ArrayList<PVector> lines) {
     PVector c23 = intersection(l2, l3);
     PVector c34 = intersection(l3, l4);
     PVector c41 = intersection(l4, l1);
-    if (graph.isConvex(c12, c23, c34, c41) && graph.validArea(c12, c23, c34, c41, img.width*img.height, 0) && graph.nonFlatQuad(c12, c23, c34, c41)) {
+    if (graph.isConvex(c12, c23, c34, c41) && graph.nonFlatQuad(c12, c23, c34, c41)) {
       // Choose a random, semi-transparent colour
       /*Random random = new Random();
        fill(color(min(255, random.nextInt(300)), 

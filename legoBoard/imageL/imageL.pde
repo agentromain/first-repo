@@ -3,6 +3,7 @@ import java.util.Random;
 Capture cam;
 PImage img;
 PImage result;
+PImage hough;
 QuadGraph graph;
 float[][] kernel = {{1, 4, 7, 4, 1}, 
   {4, 16, 26, 16, 4}, 
@@ -25,7 +26,7 @@ void settings() {
 }
 void setup() {
   graph = new QuadGraph();
-  img = loadImage("../board1.jpg");
+  img = loadImage("../board4.jpg");
   /*String[] cameras = Capture.list();
    if (cameras.length == 0) {
    println("There are no cameras available for capture.");
@@ -50,6 +51,7 @@ void draw() {
 
   //img = cam.get();
   img.resize(400, 300);
+  image(img,0,0);
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
   selectHue(selectBrightness(img, 0, 148), 69, 139);
@@ -58,14 +60,18 @@ void draw() {
   selectSaturation(result, 108, 255);
   result.updatePixels();
   //image(result, 0, 0);
-  image(img, 0, 0);
   PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 124));
+  img.resize(400,300);
   ArrayList<PVector> lines = hough(im, 4);
   getIntersections(lines);
   graph.build(lines, img.width, img.height);
   List<int[]> cy = graph.findCycles();
   println(cy.size());
   displayQuads(cy, lines);
+  fill(0,0,0);
+  rect(400,0,800,300);
+  image(hough, 400, 0);
+  image(im,800,0);
 }
 
 void selectSaturation(PImage image, int min, int max) {
@@ -138,7 +144,7 @@ void draw_Line(PVector l) {
         line(x1, y1, x3, y3);
     } else
       line(x2, y2, x3, y3);
-  }  
+  }
 }
 PVector intersection(PVector l1, PVector l2) {
   double d = cos(l2.y) * sin(l1.y) - cos(l1.y) * sin(l2.y);
@@ -301,7 +307,14 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
       }
     }
   }
-
+  hough = createImage(rDim + 2, phiDim + 2, ALPHA);
+  for (int i = 0; i < accumulator.length; i++) {
+    hough.pixels[i] = color(min(255, accumulator[i]));
+  }
+  // You may want to resize the accumulator to make it easier to see:
+  // houghImg.resize(400, 400);
+  hough.resize(300,400);
+  hough.updatePixels();
   ArrayList<Integer> bestCandidates = new ArrayList();
   // size of the region we search for a local maximum
   int neighbourhood = 10;
@@ -368,24 +381,24 @@ class HoughComparator implements java.util.Comparator<Integer> {
     if (accumulator[l1] > accumulator[l2]
       || (accumulator[l1] == accumulator[l2] && l1 < l2)) return -1;
     return 1;
-
-  }  }
-
-  ArrayList<PVector> getIntersections(ArrayList<PVector> lines) {
-    ArrayList<PVector> intersections = new ArrayList<PVector>();
-    for (int i = 0; i < lines.size() - 1; i++) {
-      PVector l1 = lines.get(i);
-      for (int j = i + 1; j < lines.size(); j++) {
-        PVector l2 = lines.get(j);
-        // compute the intersection and add it to ’intersections’
-
-        PVector inter = intersection(l1, l2);
-        intersections.add(inter);
-
-        // draw the intersection
-        fill(255, 128, 0);
-        ellipse(inter.x, inter.y, 10, 10);
-      }
-    }
-    return intersections;
   }
+}
+
+ArrayList<PVector> getIntersections(ArrayList<PVector> lines) {
+  ArrayList<PVector> intersections = new ArrayList<PVector>();
+  for (int i = 0; i < lines.size() - 1; i++) {
+    PVector l1 = lines.get(i);
+    for (int j = i + 1; j < lines.size(); j++) {
+      PVector l2 = lines.get(j);
+      // compute the intersection and add it to ’intersections’
+
+      PVector inter = intersection(l1, l2);
+      intersections.add(inter);
+
+      // draw the intersection
+      fill(255, 128, 0);
+      ellipse(inter.x, inter.y, 10, 10);
+    }
+  }
+  return intersections;
+}

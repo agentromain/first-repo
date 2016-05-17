@@ -1,7 +1,9 @@
 import processing.video.*;
+import java.util.Random;
 Capture cam;
 PImage img;
 PImage result;
+QuadGraph graph;
 float[][] kernel = {{1, 4, 7, 4, 1}, 
   {4, 16, 26, 16, 4}, 
   {7, 26, 41, 26, 7}, 
@@ -9,30 +11,33 @@ float[][] kernel = {{1, 4, 7, 4, 1},
   {1, 4, 7, 4, 1}
 };
 
-float[][] kernel1 = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 
-  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+float[][] kernel1 = {{0, 0, 0, 5, 0, 0, 0}, 
+  {0, 5, 18, 32, 18, 5, 0}, 
+  {0, 18, 64, 100, 64, 18, 0}, 
+  {5, 32, 100, 100, 100, 32, 5}, 
+  {0, 18, 64, 100, 64, 18, 0}, 
+  {0, 5, 18, 32, 18, 5, 0}, 
+  {0, 0, 0, 5, 0, 0, 0}
 };
 
 void settings() {
   size(800, 600);
 }
 void setup() {
+  graph = new QuadGraph();
   img = loadImage("../board1.jpg");
   /*String[] cameras = Capture.list();
-  if (cameras.length == 0) {
-    println("There are no cameras available for capture.");
-    exit();
-  } else {
-    println("Available cameras:");
-    for (int i = 0; i < cameras.length; i++) {
-      println(cameras[i]);
-    }
-    cam = new Capture(this, cameras[3]);
-    cam.start();
-  }*/
+   if (cameras.length == 0) {
+   println("There are no cameras available for capture.");
+   exit();
+   } else {
+   println("Available cameras:");
+   for (int i = 0; i < cameras.length; i++) {
+   println(cameras[i]);
+   }
+   cam = new Capture(this, cameras[3]);
+   cam.start();
+   }*/
 
   noLoop(); // no interactive behaviour: draw() will be called only once.
 }
@@ -40,21 +45,106 @@ void setup() {
 void draw() {
   background(0, 0, 0);
   /*if (cam.available() == true) {
-    cam.read();
-  }*/
+   cam.read();
+   }*/
 
   //img = cam.get();
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  selectHue(selectBrightness(img, 0, 124), 116, 136);
+  selectHue(selectBrightness(img, 0, 148), 69, 139);
+  result.updatePixels();
+  result.loadPixels();
+  selectSaturation(result, 108, 255);
   result.updatePixels();
   //image(result, 0, 0);
-  PImage im = sobel(selectBrightness(convolute(result, kernel, 5), 0, 124));
+  PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 124));
   image(im, 0, 0);
-  getIntersections(hough(im, 6));
-  
+  ArrayList<PVector> lines = hough(im, 4);
+  getIntersections(lines);
+  graph.build(lines, img.width, img.height);
+  List<int[]> cy = graph.findCycles();
+  println(cy.size());
+  displayQuads(cy, lines);
 }
 
+void selectSaturation(PImage image, int min, int max) {
+  for (int i = 0; i < image.width * image.height; ++i) {
+    float b = saturation(image.pixels[i]);
+    if (b < max && b > min) {
+      image.pixels[i] = image.pixels[i];
+    } else {
+      image.pixels[i] = color(0, 0, 0);
+    }
+  }
+}
+
+void displayQuads(List<int[]> quads, ArrayList<PVector> lines) {
+  for (int[] quad : quads) {
+
+    PVector l1 = lines.get(quad[0]);
+    PVector l2 = lines.get(quad[1]);
+    PVector l3 = lines.get(quad[2]);
+    PVector l4 = lines.get(quad[3]);
+
+    // (intersection() is a simplified version of the
+    // intersections() method you wrote last week, that simply
+    // return the coordinates of the intersection between 2 lines)
+    PVector c12 = intersection(l1, l2);
+    PVector c23 = intersection(l2, l3);
+    PVector c34 = intersection(l3, l4);
+    PVector c41 = intersection(l4, l1);
+    if (graph.isConvex(c12, c23, c34, c41) && graph.validArea(c12, c23, c34, c41, img.width*img.height, 0) && graph.nonFlatQuad(c12, c23, c34, c41)) {
+      // Choose a random, semi-transparent colour
+      /*Random random = new Random();
+       fill(color(min(255, random.nextInt(300)), 
+       min(255, random.nextInt(300)), 
+       min(255, random.nextInt(300)), 50));
+       quad(c12.x, c12.y, c23.x, c23.y, c34.x, c34.y, c41.x, c41.y);
+       */
+      draw_Line(l1);
+      draw_Line(l2);
+      draw_Line(l3);
+      draw_Line(l4);
+    }
+  }
+}
+
+void draw_Line(PVector l) {
+  float r = l.x;
+  float phi = l.y;
+  int x0 = 0;
+  int y0 = (int) (r / sin(phi));
+  int x1 = (int) (r / cos(phi));
+  int y1 = 0;
+  int x2 = img.width;
+  int y2 = (int) (-cos(phi) / sin(phi) * x2 + r / sin(phi));
+  int y3 = img.width;
+  int x3 = (int) (-(y3 - r / sin(phi)) * (sin(phi) / cos(phi)));
+  // Finally, plot the lines
+  stroke(204, 102, 0);
+  if (y0 > 0) {
+    if (x1 > 0)
+      line(x0, y0, x1, y1);
+    else if (y2 > 0)
+      line(x0, y0, x2, y2);
+    else
+      line(x0, y0, x3, y3);
+  } else {
+    if (x1 > 0) {
+      if (y2 > 0)
+        line(x1, y1, x2, y2);
+      else
+        line(x1, y1, x3, y3);
+    } else
+      line(x2, y2, x3, y3);
+  }  
+}
+PVector intersection(PVector l1, PVector l2) {
+  double d = cos(l2.y) * sin(l1.y) - cos(l1.y) * sin(l2.y);
+  float x = (float)((l2.x * sin(l1.y) - l1.x * sin(l2.y))/d);
+  float y = (float)((-l2.x * cos(l1.y) + l1.x * cos(l2.y))/d);
+  return new PVector(x, y);
+}
 void tBinary(PImage img1, float threshold, color c1, color c2) {
   println("b: " + brightness(img1.pixels[10]) + " t : " + threshold);
   for (int i = 0; i < img1.width * img1.height; ++i) {
@@ -216,7 +306,7 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
   int neighbourhood = 10;
   // only search around lines with more that this amount of votes
   // (to be adapted to your image)
-  int minVotes = 200;
+  int minVotes = 100;
   for (int accR = 0; accR < rDim; accR++) {
     for (int accPhi = 0; accPhi < phiDim; accPhi++) {
       // compute current index in the accumulator
@@ -263,34 +353,6 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
     // => y = 0 : x = r / cos(phi)
     // => x = 0 : y = r / sin(phi)
     result.add(new PVector(r, phi));
-    // compute the intersection of this line with the 4 borders of
-    // the image
-    int x0 = 0;
-    int y0 = (int) (r / sin(phi));
-    int x1 = (int) (r / cos(phi));
-    int y1 = 0;
-    int x2 = edgeImg.width;
-    int y2 = (int) (-cos(phi) / sin(phi) * x2 + r / sin(phi));
-    int y3 = edgeImg.width;
-    int x3 = (int) (-(y3 - r / sin(phi)) * (sin(phi) / cos(phi)));
-    // Finally, plot the lines
-    stroke(204, 102, 0);
-    if (y0 > 0) {
-      if (x1 > 0)
-        line(x0, y0, x1, y1);
-      else if (y2 > 0)
-        line(x0, y0, x2, y2);
-      else
-        line(x0, y0, x3, y3);
-    } else {
-      if (x1 > 0) {
-        if (y2 > 0)
-          line(x1, y1, x2, y2);
-        else
-          line(x1, y1, x3, y3);
-      } else
-        line(x2, y2, x3, y3);
-    }
   }
   return result;
 }
@@ -305,26 +367,24 @@ class HoughComparator implements java.util.Comparator<Integer> {
     if (accumulator[l1] > accumulator[l2]
       || (accumulator[l1] == accumulator[l2] && l1 < l2)) return -1;
     return 1;
-  }
-}
 
-ArrayList<PVector> getIntersections(ArrayList<PVector> lines) {
-  ArrayList<PVector> intersections = new ArrayList<PVector>();
-  for (int i = 0; i < lines.size() - 1; i++) {
-    PVector l1 = lines.get(i);
-    for (int j = i + 1; j < lines.size(); j++) {
-      PVector l2 = lines.get(j);
-      // compute the intersection and add it to ’intersections’
-      
-      double d = cos(l2.y) * sin(l1.y) - cos(l1.y) * sin(l2.y);
-      float x = (float)((l2.x * sin(l1.y) - l1.x * sin(l2.y))/d);
-      float y = (float)((-l2.x * cos(l1.y) + l1.x * cos(l2.y))/d);
-      intersections.add(new PVector(x, y));
-      
-      // draw the intersection
-      fill(255, 128, 0);
-      ellipse(x, y, 10, 10);
+  }  }
+
+  ArrayList<PVector> getIntersections(ArrayList<PVector> lines) {
+    ArrayList<PVector> intersections = new ArrayList<PVector>();
+    for (int i = 0; i < lines.size() - 1; i++) {
+      PVector l1 = lines.get(i);
+      for (int j = i + 1; j < lines.size(); j++) {
+        PVector l2 = lines.get(j);
+        // compute the intersection and add it to ’intersections’
+
+        PVector inter = intersection(l1, l2);
+        intersections.add(inter);
+
+        // draw the intersection
+        fill(255, 128, 0);
+        ellipse(inter.x, inter.y, 10, 10);
+      }
     }
+    return intersections;
   }
-  return intersections;
-}

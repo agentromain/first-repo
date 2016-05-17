@@ -13,7 +13,8 @@ void settings() {
   size(800, 600);
 }
 void setup() {
-  String[] cameras = Capture.list();
+  img = loadImage("../board2.jpg");
+  /*String[] cameras = Capture.list();
   if (cameras.length == 0) {
     println("There are no cameras available for capture.");
     exit();
@@ -24,25 +25,28 @@ void setup() {
     }
     cam = new Capture(this, cameras[3]);
     cam.start();
-  }
+  }*/
 
   //noLoop(); // no interactive behaviour: draw() will be called only once.
 }
 
 void draw() {
   background(0, 0, 0);
-  if (cam.available() == true) {
+  /*if (cam.available() == true) {
     cam.read();
-  }
+  }*/
 
-  img = cam.get();
+  //img = cam.get();
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  selectHue(selectBrightness(img, 5, 146), 70, 131);
+  selectHue(selectBrightness(img, 0, 172), 100, 137);
   result.updatePixels();
+  //image(result, 0, 0);
+  
   PImage im = sobel(convolute(result, kernel, 3));
-  image(img, 0, 0);
-  getIntersections(hough(im, 4));
+  image(im, 0, 0);
+  //getIntersections(hough(im, 4));
+  
 }
 
 void tBinary(PImage img1, float threshold, color c1, color c2) {

@@ -26,7 +26,7 @@ void settings() {
 }
 void setup() {
   graph = new QuadGraph();
-  img = loadImage("../board4.jpg");
+  img = loadImage("../board1.jpg");
   /*String[] cameras = Capture.list();
    if (cameras.length == 0) {
    println("There are no cameras available for capture.");

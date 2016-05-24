@@ -5,6 +5,7 @@ PImage img;
 PImage result;
 PImage hough;
 QuadGraph graph;
+TwoDThreeD translator ;
 float[][] kernel = {{1, 4, 7, 4, 1}, 
   {4, 16, 26, 16, 4}, 
   {7, 26, 41, 26, 7}, 
@@ -26,8 +27,8 @@ void settings() {
 }
 void setup() {
   graph = new QuadGraph();
-  //img = loadImage("../board1.jpg");
-  String[] cameras = Capture.list();
+  img = loadImage("../board1.jpg");
+  /*String[] cameras = Capture.list();
    if (cameras.length == 0) {
    println("There are no cameras available for capture.");
    exit();
@@ -39,31 +40,37 @@ void setup() {
    cam = new Capture(this, cameras[3]);
    cam.start();
    }
+   if (cam.available() == true) {
+   cam.read();
+   }
+  img = cam.get();
+  */
+  translator = new TwoDThreeD(img.width, img.height);
 
   //noLoop(); // no interactive behaviour: draw() will be called only once.
 }
 
 void draw() {
   background(0, 0, 0);
-  if (cam.available() == true) {
+  /*if (cam.available() == true) {
    cam.read();
    }
   img = cam.get();
   //img.resize(400, 300);
-  image(img,0,0);
+  */
+  //image(img,0,0);
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  selectHue(selectBrightness(img, 0, 199), 64, 121);
+  selectHue(selectBrightness(img, 0, 180), 91, 139);
   result.updatePixels();
   result.loadPixels();
   selectSaturation(result, 47, 253);
   result.updatePixels();
   //image(result, 0, 0);
-  PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 195));
+  PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 135));
   //img.resize(400,300);
-  //image(im,0,0);
-  ArrayList<PVector> lines = hough(im, 6);
-  getIntersections(lines);
+  image(im,0,0);
+  ArrayList<PVector> lines = hough(im, 4);
   graph.build(lines, img.width, img.height);
   List<int[]> cy = graph.findCycles();
   //println(cy.size());
@@ -113,6 +120,14 @@ void displayQuads(List<int[]> quads, ArrayList<PVector> lines) {
       draw_Line(l2);
       draw_Line(l3);
       draw_Line(l4);
+      List<PVector> list = new ArrayList();
+      PVector rot =translator.get3DRotations(list);
+      println("x : " + rot.x*180/Math.PI + " y: "+ rot.y*180/Math.PI + " z: " + rot.z*180/Math.PI);
+      fill(255, 128, 0);
+      ellipse(c12.x, c12.y, 10, 10);
+      ellipse(c23.x, c23.y, 10, 10);
+      ellipse(c34.x, c34.y, 10, 10);
+      ellipse(c41.x, c41.y, 10, 10);
     }
   }
 }
@@ -398,8 +413,6 @@ ArrayList<PVector> getIntersections(ArrayList<PVector> lines) {
       intersections.add(inter);
 
       // draw the intersection
-      fill(255, 128, 0);
-      ellipse(inter.x, inter.y, 10, 10);
     }
   }
   return intersections;

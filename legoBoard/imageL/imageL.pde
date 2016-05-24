@@ -22,12 +22,12 @@ float[][] kernel1 = {{0, 0, 0, 5, 0, 0, 0},
 };
 
 void settings() {
-  size(1200, 300);
+  size(900, 600);
 }
 void setup() {
   graph = new QuadGraph();
-  img = loadImage("../board1.jpg");
-  /*String[] cameras = Capture.list();
+  //img = loadImage("../board1.jpg");
+  String[] cameras = Capture.list();
    if (cameras.length == 0) {
    println("There are no cameras available for capture.");
    exit();
@@ -38,40 +38,41 @@ void setup() {
    }
    cam = new Capture(this, cameras[3]);
    cam.start();
-   }*/
+   }
 
-  noLoop(); // no interactive behaviour: draw() will be called only once.
+  //noLoop(); // no interactive behaviour: draw() will be called only once.
 }
 
 void draw() {
   background(0, 0, 0);
-  /*if (cam.available() == true) {
+  if (cam.available() == true) {
    cam.read();
-   }*/
-
-  //img = cam.get();
-  img.resize(400, 300);
+   }
+  img = cam.get();
+  //img.resize(400, 300);
   image(img,0,0);
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
-  selectHue(selectBrightness(img, 0, 148), 69, 139);
+  selectHue(selectBrightness(img, 0, 199), 64, 121);
   result.updatePixels();
   result.loadPixels();
-  selectSaturation(result, 108, 255);
+  selectSaturation(result, 47, 253);
   result.updatePixels();
   //image(result, 0, 0);
-  PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 124));
-  img.resize(400,300);
-  ArrayList<PVector> lines = hough(im, 4);
+  PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 195));
+  //img.resize(400,300);
+  //image(im,0,0);
+  ArrayList<PVector> lines = hough(im, 6);
   getIntersections(lines);
   graph.build(lines, img.width, img.height);
   List<int[]> cy = graph.findCycles();
-  println(cy.size());
+  //println(cy.size());
   displayQuads(cy, lines);
-  fill(0,0,0);
+  /*fill(0,0,0);
   rect(400,0,800,300);
-  image(hough, 400, 0);
+  //image(hough, 400, 0);
   image(im,800,0);
+  */
 }
 
 void selectSaturation(PImage image, int min, int max) {
@@ -307,7 +308,7 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
       }
     }
   }
-  hough = createImage(rDim + 2, phiDim + 2, ALPHA);
+  /*hough = createImage(rDim + 2, phiDim + 2, ALPHA);
   for (int i = 0; i < accumulator.length; i++) {
     hough.pixels[i] = color(min(255, accumulator[i]));
   }
@@ -315,6 +316,7 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
   // houghImg.resize(400, 400);
   hough.resize(300,400);
   hough.updatePixels();
+  */
   ArrayList<Integer> bestCandidates = new ArrayList();
   // size of the region we search for a local maximum
   int neighbourhood = 10;

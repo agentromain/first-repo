@@ -43,8 +43,8 @@ void setup() {
    if (cam.available() == true) {
    cam.read();
    }
-  img = cam.get();
-  */
+   img = cam.get();
+   */
   translator = new TwoDThreeD(img.width, img.height);
 
   //noLoop(); // no interactive behaviour: draw() will be called only once.
@@ -55,9 +55,9 @@ void draw() {
   /*if (cam.available() == true) {
    cam.read();
    }
-  img = cam.get();
-  //img.resize(400, 300);
-  */
+   img = cam.get();
+   //img.resize(400, 300);
+   */
   //image(img,0,0);
   result = createImage(img.width, img.height, RGB);
   result.loadPixels();
@@ -69,17 +69,17 @@ void draw() {
   //image(result, 0, 0);
   PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 135));
   //img.resize(400,300);
-  image(im,0,0);
+  image(im, 0, 0);
   ArrayList<PVector> lines = hough(im, 4);
   graph.build(lines, img.width, img.height);
   List<int[]> cy = graph.findCycles();
   //println(cy.size());
   displayQuads(cy, lines);
   /*fill(0,0,0);
-  rect(400,0,800,300);
-  //image(hough, 400, 0);
-  image(im,800,0);
-  */
+   rect(400,0,800,300);
+   //image(hough, 400, 0);
+   image(im,800,0);
+   */
 }
 
 void selectSaturation(PImage image, int min, int max) {
@@ -92,7 +92,6 @@ void selectSaturation(PImage image, int min, int max) {
     }
   }
 }
-
 void displayQuads(List<int[]> quads, ArrayList<PVector> lines) {
   for (int[] quad : quads) {
 
@@ -121,7 +120,8 @@ void displayQuads(List<int[]> quads, ArrayList<PVector> lines) {
       draw_Line(l3);
       draw_Line(l4);
       List<PVector> list = new ArrayList();
-      PVector rot =translator.get3DRotations(list);
+      list.add(c12); list.add(c23); list.add(c34); list.add(c41);
+      PVector rot =translator.get3DRotations(graph.sortCorners(list));
       println("x : " + rot.x*180/Math.PI + " y: "+ rot.y*180/Math.PI + " z: " + rot.z*180/Math.PI);
       fill(255, 128, 0);
       ellipse(c12.x, c12.y, 10, 10);
@@ -324,14 +324,14 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines ) {
     }
   }
   /*hough = createImage(rDim + 2, phiDim + 2, ALPHA);
-  for (int i = 0; i < accumulator.length; i++) {
-    hough.pixels[i] = color(min(255, accumulator[i]));
-  }
-  // You may want to resize the accumulator to make it easier to see:
-  // houghImg.resize(400, 400);
-  hough.resize(300,400);
-  hough.updatePixels();
-  */
+   for (int i = 0; i < accumulator.length; i++) {
+   hough.pixels[i] = color(min(255, accumulator[i]));
+   }
+   // You may want to resize the accumulator to make it easier to see:
+   // houghImg.resize(400, 400);
+   hough.resize(300,400);
+   hough.updatePixels();
+   */
   ArrayList<Integer> bestCandidates = new ArrayList();
   // size of the region we search for a local maximum
   int neighbourhood = 10;

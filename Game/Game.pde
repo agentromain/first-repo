@@ -9,14 +9,17 @@ int previousSecond = 0;
 int currentIndex = 0; //Used to remember scores in scoreUntilNow,  and the associated amount of "little square" in squareNeeded
 HScrollbar hs;
 PFont police;
-
-
+ImageProcessing imgproc;
 
 void settings() {
   size(windowSize, windowSize, P3D);
 }
 
 void setup() {
+  imgproc = new ImageProcessing();
+  String []args = {"Image processing window"};
+  PApplet.runSketch(args, imgproc);
+
   police = loadFont("Candara-18.vlw");
   banner = createGraphics(bannerWidth, bannerHeight, P2D);
   topView = createGraphics(topViewEdge, topViewEdge, P2D);
@@ -35,10 +38,16 @@ void setup() {
 
 //==========================MAIN-DRAW==========================
 void draw() {
-  
+
   environmentSetup();
   pushMatrix(); //PUSH 1 (prendre en compte le translate initial pour avoir (0,0,0) au milieu de l'écran
-
+  PVector rot = imgproc.getRotation();
+  rotX = rot.x;
+  rotZ = - rot.z;
+  rotX = Math.min(rotX, (float) Math.PI/3);
+  rotX = Math.max(rotX, (float) -Math.PI/3);
+  rotZ = Math.min(rotZ, (float) Math.PI/3);
+  rotZ = Math.max(rotZ, (float) -Math.PI/3);
   modeSelection();  
   boxSetup();
   pushMatrix(); //PUSH 2 (prendre en compte le translate pour que les objets soient posés sur la plaque et pas + haut ni + bas)
@@ -70,7 +79,7 @@ Méthode qui effectue les operations suivantes :
  Ensuite on augmente l'index pour analyse les 5 secondes d'après.
  */
 void operations_for_scoreChart() {
-  
+
   if (second()% frequency == 0 && second() != previousSecond) {
 
     //Calculate how many squares are needed to represent the score
@@ -81,12 +90,11 @@ void operations_for_scoreChart() {
     loopNumber += (currentIndex+1 >= bufferSize ? 1 : 0);
     currentIndex = (currentIndex + 1)  % bufferSize;
   }
-  
+
   playerBegan |= (points != 0);
   currentIndex = (playerBegan ? currentIndex : 0);
-  
+
   scoreUntilNow[currentIndex] = points;
-  
 }
 
 /*
@@ -150,8 +158,9 @@ void modeSelection() {
     }
     popMatrix();
   } else {
-    rotateX(rotX);
-    rotateZ(rotZ);
+    PVector rot = imgproc.getRotation();
+    rotateX(rot.x);
+    rotateZ(-rot.z);
     ball.update();
   }
 }
@@ -161,7 +170,7 @@ void modeSelection() {
 
 void mouseDragged() {
   if (mouseY  < windowSize/2 + windowSize*0.3 && !hs.locked) {
-    
+
     if ( abs((float)(mouseY-posY)) > abs((float)(mouseX-posX))) {
       rotX = tilt(rotX, mouseY < posY);
       posY = mouseY;

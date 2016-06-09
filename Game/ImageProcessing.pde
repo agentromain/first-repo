@@ -2,7 +2,7 @@ import processing.video.*;
 import java.util.Random;
 
 class ImageProcessing extends PApplet {
-  Capture cam;
+  Movie cam;
   PImage img;
   PImage result;
   PImage hough;
@@ -31,7 +31,7 @@ class ImageProcessing extends PApplet {
     graph = new QuadGraph();
     //img = loadImage("C:\\Users\\marin\\Documents\\EPFL semestre 4\\Visual computing\\Projet\\romain\\first-repo\\Game\\board1.jpg");
     rotation = new PVector(0,0,0);
-    String[] cameras = Capture.list();
+    /*String[] cameras = Capture.list();
      if (cameras.length == 0) {
      println("There are no cameras available for capture.");
      exit();
@@ -46,6 +46,9 @@ class ImageProcessing extends PApplet {
      if (cam.available() == true) {
      cam.read();
      }
+     */
+     cam = new Movie(this, "C:\\Users\\marin\\Documents\\EPFL semestre 4\\Visual computing\\Projet\\romain\\first-repo\\Game\\testvideo.mp4"); //Put the video in the same directory
+     cam.loop();
      img = cam.get();
      
     translator = new TwoDThreeD(img.width, img.height);
@@ -63,13 +66,13 @@ class ImageProcessing extends PApplet {
     //image(img,0,0);
     result = createImage(img.width, img.height, RGB);
     result.loadPixels();
-    selectHue(selectBrightness(img, 0, 199), 64, 121);
+    selectHue(selectBrightness(img, 0, 197), 64, 127);
     result.updatePixels();
     result.loadPixels();
-    selectSaturation(result, 47, 253);
+    selectSaturation(result, 56, 255);
     result.updatePixels();
     //image(result, 0, 0);
-    PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 135));
+    PImage im = sobel(selectBrightness(convolute(result, kernel1, 7), 0, 154));
     //img.resize(400,300);
     image(im, 0, 0);
     ArrayList<PVector> lines = hough(im, 4);

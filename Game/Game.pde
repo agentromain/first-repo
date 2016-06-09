@@ -43,7 +43,7 @@ void draw() {
   pushMatrix(); //PUSH 1 (prendre en compte le translate initial pour avoir (0,0,0) au milieu de l'écran
   PVector rot = imgproc.getRotation();
   rotX = rot.x;
-  rotZ = - rot.z;
+  rotZ = rot.y;
   rotX = Math.min(rotX, (float) Math.PI/3);
   rotX = Math.max(rotX, (float) -Math.PI/3);
   rotZ = Math.min(rotZ, (float) Math.PI/3);
